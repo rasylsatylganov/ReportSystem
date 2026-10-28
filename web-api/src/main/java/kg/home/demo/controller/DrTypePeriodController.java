@@ -1,87 +1,81 @@
 package kg.home.demo.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import kg.home.demo.entity.DrTypePeriod;
 import kg.home.demo.service.DrTypePeriodService;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dr-type-periods")
 public class DrTypePeriodController {
 
-    private final DrTypePeriodService drTypePeriodService;
+    private final DrTypePeriodService service;
 
-    public DrTypePeriodController(DrTypePeriodService drTypePeriodService) {
-        this.drTypePeriodService = drTypePeriodService;
+    public DrTypePeriodController(DrTypePeriodService service) {
+        this.service = service;
     }
 
-    // Получить все типы периодов
     @GetMapping
     public ResponseEntity<List<DrTypePeriod>> getAllDrTypePeriods() {
-        return ResponseEntity.ok(
-                drTypePeriodService.getAllDrTypePeriods()
-        );
+        return ResponseEntity.ok(service.getAllDrTypePeriods());
     }
 
-    // Получить тип периода по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrTypePeriod> getDrTypePeriodById(
-            @PathVariable("id") Long id
-    ) {
-        return drTypePeriodService.getDrTypePeriodById(id)
+    public ResponseEntity<DrTypePeriod> getDrTypePeriodById(@PathVariable("id") Long id) {
+        return service.getDrTypePeriodById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Создать тип периода
     @PostMapping
-    public ResponseEntity<DrTypePeriod> createDrTypePeriod(
-            @RequestBody DrTypePeriod drTypePeriod
-    ) {
-        drTypePeriod.setId(null);
-
-        DrTypePeriod saved = drTypePeriodService.createDrTypePeriod(
-                drTypePeriod
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<DrTypePeriod> createDrTypePeriod(@RequestBody DrTypePeriod period) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createDrTypePeriod(period));
     }
 
-    // Обновить тип периода
     @PutMapping("/{id}")
     public ResponseEntity<DrTypePeriod> updateDrTypePeriod(
-            @PathVariable("id") Long id,
-            @RequestBody DrTypePeriod drTypePeriod
-    ) {
-        try {
-            DrTypePeriod updated = drTypePeriodService.updateDrTypePeriod(
-                    id, drTypePeriod
-            );
-
-            return ResponseEntity.ok(updated);
-        } catch (DataAccessException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+            @PathVariable("id") Long id, @RequestBody DrTypePeriod period) {
+        return ResponseEntity.ok(service.updateDrTypePeriod(id, period));
     }
 
-    // Удалить тип периода
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDrTypePeriod(
-            @PathVariable("id") Long id
-    ) {
-        try {
-            drTypePeriodService.deleteDrTypePeriod(id);
-            return ResponseEntity.noContent().build();
-        } catch (DataAccessException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteDrTypePeriod(@PathVariable("id") Long id) {
+        service.deleteDrTypePeriod(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/move-up")
+    public ResponseEntity<Void> moveUp(@PathVariable("id") Long id) {
+        service.moveUp(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/move-down")
+    public ResponseEntity<Void> moveDown(@PathVariable("id") Long id) {
+        service.moveDown(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNotFound(EntityNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", exception.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleInvalid(IllegalArgumentException exception) {
+        return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraint(DataIntegrityViolationException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message",
+                "Операция нарушает ограничение БД: код уже существует или запись используется в связанных таблицах."));
     }
 }
