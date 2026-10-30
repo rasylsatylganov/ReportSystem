@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.MdReportInReferenceEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.MdReportInReferenceMapper;
 import kg.home.demo.model.MdReportInReference;
 import kg.home.demo.model.MdReportInReferenceRequest;
@@ -46,7 +47,7 @@ public class MdReportInReferenceServiceImpl implements MdReportInReferenceServic
     @Transactional
     public MdReportInReference updateMdReportInReference(Long id, MdReportInReferenceRequest request) {
         MdReportInReferenceEntity entity = mdReportInReferenceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("MdReportInReferenceEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Справочник входящего отчета", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(mdReportInReferenceRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class MdReportInReferenceServiceImpl implements MdReportInReferenceServic
     @Transactional
     public void deleteMdReportInReference(Long id) {
         if (!mdReportInReferenceRepository.existsById(id)) {
-            throw new RuntimeException("MdReportInReferenceEntity not found with id " + id);
+            throw new ResourceNotFoundException("Справочник входящего отчета", id);
         }
         mdReportInReferenceRepository.deleteById(id);
     }

@@ -1,0 +1,13 @@
+package kg.home.demo.model;
+
+public enum ErrorCode {
+    VALIDATION_ERROR,
+    INVALID_REQUEST,
+    MALFORMED_REQUEST,
+    RESOURCE_NOT_FOUND,
+    DATA_CONFLICT,
+    METHOD_NOT_ALLOWED,
+    UNSUPPORTED_MEDIA_TYPE,
+    HTTP_ERROR,
+    INTERNAL_ERROR
+}

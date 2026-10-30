@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.MdReportInEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.MdReportInMapper;
 import kg.home.demo.model.MdReportIn;
 import kg.home.demo.model.MdReportInRequest;
@@ -46,7 +47,7 @@ public class MdReportInServiceImpl implements MdReportInService {
     @Transactional
     public MdReportIn updateMdReportIn(Long id, MdReportInRequest request) {
         MdReportInEntity entity = mdReportInRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("MdReportInEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Входящий отчет", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(mdReportInRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class MdReportInServiceImpl implements MdReportInService {
     @Transactional
     public void deleteMdReportIn(Long id) {
         if (!mdReportInRepository.existsById(id)) {
-            throw new RuntimeException("MdReportInEntity not found with id " + id);
+            throw new ResourceNotFoundException("Входящий отчет", id);
         }
         mdReportInRepository.deleteById(id);
     }

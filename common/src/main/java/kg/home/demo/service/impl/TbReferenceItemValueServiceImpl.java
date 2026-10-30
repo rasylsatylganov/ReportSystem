@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.TbReferenceItemValueEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.TbReferenceItemValueMapper;
 import kg.home.demo.model.TbReferenceItemValue;
 import kg.home.demo.model.TbReferenceItemValueRequest;
@@ -46,7 +47,7 @@ public class TbReferenceItemValueServiceImpl implements TbReferenceItemValueServ
     @Transactional
     public TbReferenceItemValue updateTbReferenceItemValue(Long id, TbReferenceItemValueRequest request) {
         TbReferenceItemValueEntity entity = tbReferenceItemValueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("TbReferenceItemValueEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Значение отчета", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(tbReferenceItemValueRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class TbReferenceItemValueServiceImpl implements TbReferenceItemValueServ
     @Transactional
     public void deleteTbReferenceItemValue(Long id) {
         if (!tbReferenceItemValueRepository.existsById(id)) {
-            throw new RuntimeException("TbReferenceItemValueEntity not found with id " + id);
+            throw new ResourceNotFoundException("Значение отчета", id);
         }
         tbReferenceItemValueRepository.deleteById(id);
     }

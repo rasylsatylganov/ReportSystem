@@ -1,9 +1,12 @@
 package kg.home.demo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.model.DrReferenceItem;
 import kg.home.demo.model.DrReferenceItemRequest;
 import kg.home.demo.service.DrReferenceItemService;
-import org.springframework.dao.DataAccessException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,79 +14,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/dr-reference-items")
 public class DrReferenceItemController {
 
+
     private final DrReferenceItemService drReferenceItemService;
 
-    public DrReferenceItemController(
-            DrReferenceItemService drReferenceItemService
-    ) {
-        this.drReferenceItemService = drReferenceItemService;
-    }
-
-    // Получить все элементы справочников
     @GetMapping
     public ResponseEntity<List<DrReferenceItem>> getAllDrReferenceItems() {
-        return ResponseEntity.ok(
-                drReferenceItemService.getAllDrReferenceItems()
-        );
+        return ResponseEntity.ok(drReferenceItemService.getAllDrReferenceItems());
     }
 
-    // Получить элемент справочника по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrReferenceItem> getDrReferenceItemById(
-            @PathVariable("id") Long id
-    ) {
-        return drReferenceItemService.getDrReferenceItemById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DrReferenceItem> getDrReferenceItemById(@PathVariable("id") @Positive Long id) {
+        return ResponseEntity.ok(drReferenceItemService.getDrReferenceItemById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Элемент справочника", id)));
     }
 
-    // Создать элемент справочника
     @PostMapping
-    public ResponseEntity<DrReferenceItem> createDrReferenceItem(
-            @RequestBody DrReferenceItemRequest drReferenceItem
-    ) {
-
-        DrReferenceItem saved =
-                drReferenceItemService.createDrReferenceItem(drReferenceItem);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<DrReferenceItem> createDrReferenceItem(@Valid @RequestBody DrReferenceItemRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(drReferenceItemService.createDrReferenceItem(request));
     }
 
-    // Обновить элемент справочника
     @PutMapping("/{id}")
     public ResponseEntity<DrReferenceItem> updateDrReferenceItem(
-            @PathVariable("id") Long id,
-            @RequestBody DrReferenceItemRequest drReferenceItem
-    ) {
-        try {
-            DrReferenceItem updated =
-                    drReferenceItemService.updateDrReferenceItem(
-                            id, drReferenceItem
-                    );
+            @PathVariable("id") @Positive Long id, @Valid @RequestBody DrReferenceItemRequest request) {
 
-            return ResponseEntity.ok(updated);
-        } catch (DataAccessException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(drReferenceItemService.updateDrReferenceItem(id, request));
     }
 
-    // Удалить элемент справочника
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDrReferenceItem(
-            @PathVariable("id") Long id
-    ) {
-        try {
-            drReferenceItemService.deleteDrReferenceItem(id);
-            return ResponseEntity.noContent().build();
-        } catch (DataAccessException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteDrReferenceItem(@PathVariable("id") @Positive Long id) {
+        drReferenceItemService.deleteDrReferenceItem(id);
+        return ResponseEntity.noContent().build();
     }
 }

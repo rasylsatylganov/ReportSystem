@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.DrTypePositionEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrTypePositionMapper;
 import kg.home.demo.model.DrTypePosition;
 import kg.home.demo.model.DrTypePositionRequest;
@@ -46,7 +47,7 @@ public class DrTypePositionServiceImpl implements DrTypePositionService {
     @Transactional
     public DrTypePosition updateDrTypePosition(Long id, DrTypePositionRequest request) {
         DrTypePositionEntity entity = drTypePositionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DrTypePositionEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Тип расположения", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(drTypePositionRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class DrTypePositionServiceImpl implements DrTypePositionService {
     @Transactional
     public void deleteDrTypePosition(Long id) {
         if (!drTypePositionRepository.existsById(id)) {
-            throw new RuntimeException("DrTypePositionEntity not found with id " + id);
+            throw new ResourceNotFoundException("Тип расположения", id);
         }
         drTypePositionRepository.deleteById(id);
     }

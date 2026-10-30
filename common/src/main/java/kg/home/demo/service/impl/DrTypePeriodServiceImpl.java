@@ -1,7 +1,7 @@
 package kg.home.demo.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import kg.home.demo.entity.DrTypePeriodEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrTypePeriodMapper;
 import kg.home.demo.model.DrTypePeriod;
 import kg.home.demo.model.DrTypePeriodRequest;
@@ -39,7 +39,6 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
     @Override
     @Transactional
     public DrTypePeriod createDrTypePeriod(DrTypePeriodRequest request) {
-        validate(request);
         repository.findAllForUpdate();
         DrTypePeriodEntity entity = new DrTypePeriodEntity();
         mapper.applyRequest(entity, request);
@@ -50,7 +49,6 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
     @Override
     @Transactional
     public DrTypePeriod updateDrTypePeriod(Long id, DrTypePeriodRequest request) {
-        validate(request);
         DrTypePeriodEntity existing = findRequired(repository.findAllForUpdate(), id);
         mapper.applyRequest(existing, request);
         // Обычный PUT не меняет порядок записи.
@@ -102,17 +100,7 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
         return periods.stream()
                 .filter(period -> period.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Тип периода не найден: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Тип периода", id));
     }
 
-    private void validate(DrTypePeriodRequest request) {
-        if (request.codeTypePeriod() == null || request.codeTypePeriod().isBlank() ||
-                request.codeTypePeriod().length() > 3) {
-            throw new IllegalArgumentException("Код обязателен и должен содержать не более 3 символов.");
-        }
-        if (request.nameTypePeriod() == null || request.nameTypePeriod().isBlank() ||
-                request.nameTypePeriod().length() > 100) {
-            throw new IllegalArgumentException("Наименование обязательно и должно содержать не более 100 символов.");
-        }
-    }
 }

@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.DrTypeEnterpriseEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrTypeEnterpriseMapper;
 import kg.home.demo.model.DrTypeEnterprise;
 import kg.home.demo.model.DrTypeEnterpriseRequest;
@@ -46,7 +47,7 @@ public class DrTypeEnterpriseServiceImpl implements DrTypeEnterpriseService {
     @Transactional
     public DrTypeEnterprise updateDrTypeEnterprise(Long id, DrTypeEnterpriseRequest request) {
         DrTypeEnterpriseEntity entity = drTypeEnterpriseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DrTypeEnterpriseEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Тип предприятия", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(drTypeEnterpriseRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class DrTypeEnterpriseServiceImpl implements DrTypeEnterpriseService {
     @Transactional
     public void deleteDrTypeEnterprise(Long id) {
         if (!drTypeEnterpriseRepository.existsById(id)) {
-            throw new RuntimeException("DrTypeEnterpriseEntity not found with id " + id);
+            throw new ResourceNotFoundException("Тип предприятия", id);
         }
         drTypeEnterpriseRepository.deleteById(id);
     }

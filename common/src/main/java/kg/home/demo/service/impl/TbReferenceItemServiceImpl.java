@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.TbReferenceItemEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.TbReferenceItemMapper;
 import kg.home.demo.model.TbReferenceItem;
 import kg.home.demo.model.TbReferenceItemRequest;
@@ -46,7 +47,7 @@ public class TbReferenceItemServiceImpl implements TbReferenceItemService {
     @Transactional
     public TbReferenceItem updateTbReferenceItem(Long id, TbReferenceItemRequest request) {
         TbReferenceItemEntity entity = tbReferenceItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("TbReferenceItemEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Данные справочника", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(tbReferenceItemRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class TbReferenceItemServiceImpl implements TbReferenceItemService {
     @Transactional
     public void deleteTbReferenceItem(Long id) {
         if (!tbReferenceItemRepository.existsById(id)) {
-            throw new RuntimeException("TbReferenceItemEntity not found with id " + id);
+            throw new ResourceNotFoundException("Данные справочника", id);
         }
         tbReferenceItemRepository.deleteById(id);
     }

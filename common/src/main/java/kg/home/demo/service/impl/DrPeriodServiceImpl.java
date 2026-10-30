@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.DrPeriodEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrPeriodMapper;
 import kg.home.demo.model.DrPeriod;
 import kg.home.demo.model.DrPeriodRequest;
@@ -46,7 +47,7 @@ public class DrPeriodServiceImpl implements DrPeriodService {
     @Transactional
     public DrPeriod updateDrPeriod(Long id, DrPeriodRequest request) {
         DrPeriodEntity entity = drPeriodRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DrPeriodEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Период", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(drPeriodRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class DrPeriodServiceImpl implements DrPeriodService {
     @Transactional
     public void deleteDrPeriod(Long id) {
         if (!drPeriodRepository.existsById(id)) {
-            throw new RuntimeException("DrPeriodEntity not found with id " + id);
+            throw new ResourceNotFoundException("Период", id);
         }
         drPeriodRepository.deleteById(id);
     }

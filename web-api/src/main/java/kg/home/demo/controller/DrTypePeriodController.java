@@ -1,82 +1,64 @@
 package kg.home.demo.controller;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.model.DrTypePeriod;
 import kg.home.demo.model.DrTypePeriodRequest;
 import kg.home.demo.service.DrTypePeriodService;
-import org.springframework.dao.DataIntegrityViolationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/dr-type-periods")
 public class DrTypePeriodController {
 
-    private final DrTypePeriodService service;
 
-    public DrTypePeriodController(DrTypePeriodService service) {
-        this.service = service;
-    }
+    private final DrTypePeriodService drTypePeriodService;
 
     @GetMapping
     public ResponseEntity<List<DrTypePeriod>> getAllDrTypePeriods() {
-        return ResponseEntity.ok(service.getAllDrTypePeriods());
+        return ResponseEntity.ok(drTypePeriodService.getAllDrTypePeriods());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DrTypePeriod> getDrTypePeriodById(@PathVariable("id") Long id) {
-        return service.getDrTypePeriodById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DrTypePeriod> getDrTypePeriodById(@PathVariable("id") @Positive Long id) {
+        return ResponseEntity.ok(drTypePeriodService.getDrTypePeriodById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Тип периода", id)));
     }
 
     @PostMapping
-    public ResponseEntity<DrTypePeriod> createDrTypePeriod(@RequestBody DrTypePeriodRequest period) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createDrTypePeriod(period));
+    public ResponseEntity<DrTypePeriod> createDrTypePeriod(@Valid @RequestBody DrTypePeriodRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(drTypePeriodService.createDrTypePeriod(request));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DrTypePeriod> updateDrTypePeriod(
-            @PathVariable("id") Long id, @RequestBody DrTypePeriodRequest period) {
-        return ResponseEntity.ok(service.updateDrTypePeriod(id, period));
+            @PathVariable("id") @Positive Long id, @Valid @RequestBody DrTypePeriodRequest request) {
+
+        return ResponseEntity.ok(drTypePeriodService.updateDrTypePeriod(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDrTypePeriod(@PathVariable("id") Long id) {
-        service.deleteDrTypePeriod(id);
+    public ResponseEntity<Void> deleteDrTypePeriod(@PathVariable("id") @Positive Long id) {
+        drTypePeriodService.deleteDrTypePeriod(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/move-up")
-    public ResponseEntity<Void> moveUp(@PathVariable("id") Long id) {
-        service.moveUp(id);
+    public ResponseEntity<Void> moveUp(@PathVariable("id") @Positive Long id) {
+        drTypePeriodService.moveUp(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/move-down")
-    public ResponseEntity<Void> moveDown(@PathVariable("id") Long id) {
-        service.moveDown(id);
+    public ResponseEntity<Void> moveDown(@PathVariable("id") @Positive Long id) {
+        drTypePeriodService.moveDown(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleNotFound(EntityNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("message", exception.getMessage()));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleInvalid(IllegalArgumentException exception) {
-        return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, String>> handleConstraint(DataIntegrityViolationException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message",
-                "Операция нарушает ограничение БД: код уже существует или запись используется в связанных таблицах."));
     }
 }

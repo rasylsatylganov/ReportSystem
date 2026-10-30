@@ -1,9 +1,12 @@
 package kg.home.demo.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.model.DrPeriod;
 import kg.home.demo.model.DrPeriodRequest;
 import kg.home.demo.service.DrPeriodService;
-import org.springframework.dao.DataAccessException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,73 +14,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/dr-periods")
 public class DrPeriodController {
 
+
     private final DrPeriodService drPeriodService;
 
-    public DrPeriodController(DrPeriodService drPeriodService) {
-        this.drPeriodService = drPeriodService;
-    }
-
-    // Получить все периоды
     @GetMapping
     public ResponseEntity<List<DrPeriod>> getAllDrPeriods() {
-        return ResponseEntity.ok(
-                drPeriodService.getAllDrPeriods()
-        );
+        return ResponseEntity.ok(drPeriodService.getAllDrPeriods());
     }
 
-    // Получить период по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrPeriod> getDrPeriodById(
-            @PathVariable("id") Long id
-    ) {
-        return drPeriodService.getDrPeriodById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DrPeriod> getDrPeriodById(@PathVariable("id") @Positive Long id) {
+        return ResponseEntity.ok(drPeriodService.getDrPeriodById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Период", id)));
     }
 
-    // Создать период
     @PostMapping
-    public ResponseEntity<DrPeriod> createDrPeriod(
-            @RequestBody DrPeriodRequest drPeriod
-    ) {
-
-        DrPeriod saved = drPeriodService.createDrPeriod(drPeriod);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<DrPeriod> createDrPeriod(@Valid @RequestBody DrPeriodRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(drPeriodService.createDrPeriod(request));
     }
 
-    // Обновить период
     @PutMapping("/{id}")
     public ResponseEntity<DrPeriod> updateDrPeriod(
-            @PathVariable("id") Long id,
-            @RequestBody DrPeriodRequest drPeriod
-    ) {
-        try {
-            DrPeriod updated = drPeriodService.updateDrPeriod(id, drPeriod);
+            @PathVariable("id") @Positive Long id, @Valid @RequestBody DrPeriodRequest request) {
 
-            return ResponseEntity.ok(updated);
-        } catch (DataAccessException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(drPeriodService.updateDrPeriod(id, request));
     }
 
-    // Удалить период
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDrPeriod(
-            @PathVariable("id") Long id
-    ) {
-        try {
-            drPeriodService.deleteDrPeriod(id);
-            return ResponseEntity.noContent().build();
-        } catch (DataAccessException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteDrPeriod(@PathVariable("id") @Positive Long id) {
+        drPeriodService.deleteDrPeriod(id);
+        return ResponseEntity.noContent().build();
     }
 }

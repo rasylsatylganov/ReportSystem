@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.DrTypeFieldEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrTypeFieldMapper;
 import kg.home.demo.model.DrTypeField;
 import kg.home.demo.model.DrTypeFieldRequest;
@@ -46,7 +47,7 @@ public class DrTypeFieldServiceImpl implements DrTypeFieldService {
     @Transactional
     public DrTypeField updateDrTypeField(Long id, DrTypeFieldRequest request) {
         DrTypeFieldEntity entity = drTypeFieldRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DrTypeFieldEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Тип поля", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(drTypeFieldRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class DrTypeFieldServiceImpl implements DrTypeFieldService {
     @Transactional
     public void deleteDrTypeField(Long id) {
         if (!drTypeFieldRepository.existsById(id)) {
-            throw new RuntimeException("DrTypeFieldEntity not found with id " + id);
+            throw new ResourceNotFoundException("Тип поля", id);
         }
         drTypeFieldRepository.deleteById(id);
     }

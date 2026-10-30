@@ -1,6 +1,7 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.DrReferenceItemEntity;
+import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrReferenceItemMapper;
 import kg.home.demo.model.DrReferenceItem;
 import kg.home.demo.model.DrReferenceItemRequest;
@@ -46,7 +47,7 @@ public class DrReferenceItemServiceImpl implements DrReferenceItemService {
     @Transactional
     public DrReferenceItem updateDrReferenceItem(Long id, DrReferenceItemRequest request) {
         DrReferenceItemEntity entity = drReferenceItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DrReferenceItemEntity not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Элемент справочника", id));
         mapper.applyRequest(entity, request);
         return mapper.toModel(drReferenceItemRepository.save(entity));
     }
@@ -55,7 +56,7 @@ public class DrReferenceItemServiceImpl implements DrReferenceItemService {
     @Transactional
     public void deleteDrReferenceItem(Long id) {
         if (!drReferenceItemRepository.existsById(id)) {
-            throw new RuntimeException("DrReferenceItemEntity not found with id " + id);
+            throw new ResourceNotFoundException("Элемент справочника", id);
         }
         drReferenceItemRepository.deleteById(id);
     }
