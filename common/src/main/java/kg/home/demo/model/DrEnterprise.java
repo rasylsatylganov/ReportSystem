@@ -4,6 +4,7 @@ public record DrEnterprise(
         Long id,
         DrTypeEnterprise typeEnterprise,
         String codeEnterprise,
-        String nameEnterprise
+        String nameEnterprise,
+        Long sortIndex
 ) {
 }

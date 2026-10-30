@@ -11,6 +11,8 @@ public interface DrEnterpriseService {
 
     PageResult<DrEnterprise> findAllDrEnterprises(Pageable pageable);
 
+    PageResult<DrEnterprise> findDrEnterprisesByType(Long typeEnterpriseId, Pageable pageable);
+
     Optional<DrEnterprise> findDrEnterpriseById(Long id);
 
     DrEnterprise createDrEnterprise(DrEnterpriseRequest request);
@@ -18,4 +20,8 @@ public interface DrEnterpriseService {
     DrEnterprise updateDrEnterprise(Long id, DrEnterpriseRequest request);
 
     void deleteDrEnterprise(Long id);
+
+    void moveUp(Long id, Long typeEnterpriseId);
+
+    void moveDown(Long id, Long typeEnterpriseId);
 }

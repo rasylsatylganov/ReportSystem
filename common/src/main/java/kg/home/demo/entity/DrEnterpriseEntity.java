@@ -36,4 +36,7 @@ public class DrEnterpriseEntity extends BaseEntity {
 
     @Column(name = "NAME_ENTERPRISE", nullable = false, length = 300)
     private String nameEnterprise;
+
+    @Column(name = "SORT_INDEX", nullable = false, precision = 19, scale = 0)
+    private Long sortIndex;
 }

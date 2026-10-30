@@ -31,12 +31,14 @@ public interface DrEnterpriseControllerApi {
 
     @Operation(summary = "Получить страницу записей",
             operationId = "DrEnterprise_findAllDrEnterprises",
-            description = "Нумерация страниц начинается с 0; размер от 1 до 100, по умолчанию 20. Сортировка по id.")
+            description = "Страницы от 0, размер 1–100, по умолчанию 20. Сортировка по sortIndex, затем id. " +
+                    "Необязательный typeEnterpriseId фильтрует по типу предприятия.")
     @ApiResponse(responseCode = "200", description = "Операция выполнена", useReturnTypeSchema = true)
     @GetMapping
     ResponseEntity<PageResult<DrEnterprise>> findAllDrEnterprises(
             @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size);
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
+            @RequestParam(required = false) @Positive Long typeEnterpriseId);
 
     @Operation(summary = "Получить запись по ID",
             operationId = "DrEnterprise_findDrEnterpriseById")
@@ -83,4 +85,24 @@ public interface DrEnterpriseControllerApi {
                     schema = @Schema(implementation = ErrorResponse.class)))
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteDrEnterprise(@PathVariable("id") @Positive Long id);
+
+    @Operation(summary = "Переместить предприятие вверх", operationId = "DrEnterprise_moveUp",
+            description = "Обмен порядком с предыдущим предприятием, в том числе через границу страниц. " +
+                    "typeEnterpriseId ограничивает соседей выбранным типом. На границе списка — без изменений.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Предприятие не найдено в выбранном списке",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-up")
+    ResponseEntity<Void> moveUp(@PathVariable("id") @Positive Long id,
+            @RequestParam(required = false) @Positive Long typeEnterpriseId);
+
+    @Operation(summary = "Переместить предприятие вниз", operationId = "DrEnterprise_moveDown",
+            description = "Обмен порядком со следующим предприятием, в том числе через границу страниц. " +
+                    "typeEnterpriseId ограничивает соседей выбранным типом. На границе списка — без изменений.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Предприятие не найдено в выбранном списке",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-down")
+    ResponseEntity<Void> moveDown(@PathVariable("id") @Positive Long id,
+            @RequestParam(required = false) @Positive Long typeEnterpriseId);
 }

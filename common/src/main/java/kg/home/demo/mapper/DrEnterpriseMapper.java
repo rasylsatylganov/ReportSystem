@@ -29,7 +29,8 @@ public class DrEnterpriseMapper {
                 entity.getId(),
                 drTypeEnterpriseMapper.toModel(entity.getTypeEnterprise()),
                 entity.getCodeEnterprise(),
-                entity.getNameEnterprise()
+                entity.getNameEnterprise(),
+                entity.getSortIndex()
         );
     }
 }

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.List;
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,12 @@ public class DrEnterpriseServiceImpl implements DrEnterpriseService {
     }
 
     @Override
+    public PageResult<DrEnterprise> findDrEnterprisesByType(Long typeEnterpriseId, Pageable pageable) {
+        return PageResult.from(drEnterpriseRepository.findByTypeEnterprise_Id(typeEnterpriseId, pageable)
+                .map(mapper::toModel));
+    }
+
+    @Override
     public Optional<DrEnterprise> findDrEnterpriseById(Long id) {
         return drEnterpriseRepository.findById(id).map(mapper::toModel);
     }
@@ -37,16 +45,17 @@ public class DrEnterpriseServiceImpl implements DrEnterpriseService {
     @Override
     @Transactional
     public DrEnterprise createDrEnterprise(DrEnterpriseRequest request) {
+        drEnterpriseRepository.findAllForUpdate();
         DrEnterpriseEntity entity = new DrEnterpriseEntity();
         mapper.applyRequest(entity, request);
+        entity.setSortIndex(drEnterpriseRepository.nextSortIndex());
         return mapper.toModel(drEnterpriseRepository.save(entity));
     }
 
     @Override
     @Transactional
     public DrEnterprise updateDrEnterprise(Long id, DrEnterpriseRequest request) {
-        DrEnterpriseEntity entity = drEnterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Предприятие", id));
+        DrEnterpriseEntity entity = findRequired(drEnterpriseRepository.findAllForUpdate(), id);
         mapper.applyRequest(entity, request);
         return mapper.toModel(drEnterpriseRepository.save(entity));
     }
@@ -54,10 +63,45 @@ public class DrEnterpriseServiceImpl implements DrEnterpriseService {
     @Override
     @Transactional
     public void deleteDrEnterprise(Long id) {
-        if (!drEnterpriseRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Предприятие", id);
+        drEnterpriseRepository.delete(findRequired(drEnterpriseRepository.findAllForUpdate(), id));
+    }
+
+    @Override
+    @Transactional
+    public void moveUp(Long id, Long typeEnterpriseId) {
+        move(id, typeEnterpriseId, -1);
+    }
+
+    @Override
+    @Transactional
+    public void moveDown(Long id, Long typeEnterpriseId) {
+        move(id, typeEnterpriseId, 1);
+    }
+
+    private void move(Long id, Long typeEnterpriseId, int offset) {
+        List<DrEnterpriseEntity> locked = drEnterpriseRepository.findAllForUpdate();
+        DrEnterpriseEntity current = findRequired(locked, id);
+        if (typeEnterpriseId != null && !current.getTypeEnterprise().getId().equals(typeEnterpriseId)) {
+            throw new ResourceNotFoundException("Предприятие выбранного типа", id);
         }
-        drEnterpriseRepository.deleteById(id);
+        List<DrEnterpriseEntity> ordered = locked.stream()
+                .filter(enterprise -> typeEnterpriseId == null ||
+                        enterprise.getTypeEnterprise().getId().equals(typeEnterpriseId))
+                .sorted(Comparator.comparing(DrEnterpriseEntity::getSortIndex).thenComparing(DrEnterpriseEntity::getId))
+                .toList();
+        int neighborIndex = ordered.indexOf(current) + offset;
+        if (neighborIndex < 0 || neighborIndex >= ordered.size()) return;
+        DrEnterpriseEntity neighbor = ordered.get(neighborIndex);
+        Long previousIndex = current.getSortIndex();
+        current.setSortIndex(neighbor.getSortIndex());
+        neighbor.setSortIndex(previousIndex);
+        drEnterpriseRepository.saveAll(List.of(current, neighbor));
+        drEnterpriseRepository.flush();
+    }
+
+    private DrEnterpriseEntity findRequired(List<DrEnterpriseEntity> enterprises, Long id) {
+        return enterprises.stream().filter(enterprise -> enterprise.getId().equals(id)).findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Предприятие", id));
     }
 
 }

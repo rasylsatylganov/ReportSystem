@@ -23,10 +23,12 @@ public class DrEnterpriseController implements DrEnterpriseControllerApi {
     @Override
     public ResponseEntity<PageResult<DrEnterprise>> findAllDrEnterprises(
             int page,
-            int size) {
+            int size, Long typeEnterpriseId) {
 
-        return ResponseEntity.ok(
-                drEnterpriseService.findAllDrEnterprises(PageRequest.of(page, size, Sort.by("id"))));
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("sortIndex", "id"));
+        return ResponseEntity.ok(typeEnterpriseId == null
+                ? drEnterpriseService.findAllDrEnterprises(pageable)
+                : drEnterpriseService.findDrEnterprisesByType(typeEnterpriseId, pageable));
     }
 
     @Override
@@ -50,6 +52,18 @@ public class DrEnterpriseController implements DrEnterpriseControllerApi {
     @Override
     public ResponseEntity<Void> deleteDrEnterprise(Long id) {
         drEnterpriseService.deleteDrEnterprise(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveUp(Long id, Long typeEnterpriseId) {
+        drEnterpriseService.moveUp(id, typeEnterpriseId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveDown(Long id, Long typeEnterpriseId) {
+        drEnterpriseService.moveDown(id, typeEnterpriseId);
         return ResponseEntity.noContent().build();
     }
 }
