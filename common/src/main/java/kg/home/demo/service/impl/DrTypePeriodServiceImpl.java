@@ -94,8 +94,7 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
         current.setSortIndex(neighbor.getSortIndex());
         neighbor.setSortIndex(currentSortIndex);
 
-        // Обе Entity управляются JPA. Dirty checking сохранит ОБА изменения
-        // при завершении одной транзакции. При ошибке она откатится целиком.
+        repository.saveAll(List.of(current, neighbor));
         repository.flush();
     }
 
