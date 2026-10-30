@@ -1,19 +1,20 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.MdReportInReferenceItemEntity;
+import kg.home.demo.model.MdReportInReferenceItem;
+import kg.home.demo.model.MdReportInReferenceItemRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MdReportInReferenceItemService {
 
-    List<MdReportInReferenceItemEntity> getAllMdReportInReferenceItems();
+    List<MdReportInReferenceItem> getAllMdReportInReferenceItems();
 
-    Optional<MdReportInReferenceItemEntity> getMdReportInReferenceItemById(Long id);
+    Optional<MdReportInReferenceItem> getMdReportInReferenceItemById(Long id);
 
-    MdReportInReferenceItemEntity createMdReportInReferenceItem(MdReportInReferenceItemEntity mdReportInReferenceItem);
+    MdReportInReferenceItem createMdReportInReferenceItem(MdReportInReferenceItemRequest request);
 
-    MdReportInReferenceItemEntity updateMdReportInReferenceItem(Long id, MdReportInReferenceItemEntity mdReportInReferenceItem);
+    MdReportInReferenceItem updateMdReportInReferenceItem(Long id, MdReportInReferenceItemRequest request);
 
     void deleteMdReportInReferenceItem(Long id);
 }

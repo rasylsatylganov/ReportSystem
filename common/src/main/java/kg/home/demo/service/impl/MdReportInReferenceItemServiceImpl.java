@@ -1,57 +1,63 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.MdReportInReferenceItemEntity;
+import kg.home.demo.mapper.MdReportInReferenceItemMapper;
+import kg.home.demo.model.MdReportInReferenceItem;
+import kg.home.demo.model.MdReportInReferenceItemRequest;
 import kg.home.demo.repository.MdReportInReferenceItemRepository;
 import kg.home.demo.service.MdReportInReferenceItemService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MdReportInReferenceItemServiceImpl implements MdReportInReferenceItemService {
 
+
     private final MdReportInReferenceItemRepository mdReportInReferenceItemRepository;
+    private final MdReportInReferenceItemMapper mapper;
 
-    public MdReportInReferenceItemServiceImpl(MdReportInReferenceItemRepository mdReportInReferenceItemRepository) {
-        this.mdReportInReferenceItemRepository = mdReportInReferenceItemRepository;
+    @Override
+    public List<MdReportInReferenceItem> getAllMdReportInReferenceItems() {
+        return mdReportInReferenceItemRepository.findAll().stream()
+                .map(mapper::toModel)
+                .toList();
     }
 
     @Override
-    public List<MdReportInReferenceItemEntity> getAllMdReportInReferenceItems() {
-        return mdReportInReferenceItemRepository.findAll();
+    public Optional<MdReportInReferenceItem> getMdReportInReferenceItemById(Long id) {
+        return mdReportInReferenceItemRepository.findById(id).map(mapper::toModel);
     }
 
     @Override
-    public Optional<MdReportInReferenceItemEntity> getMdReportInReferenceItemById(Long id) {
-        return mdReportInReferenceItemRepository.findById(id);
+    @Transactional
+    public MdReportInReferenceItem createMdReportInReferenceItem(MdReportInReferenceItemRequest request) {
+        MdReportInReferenceItemEntity entity = new MdReportInReferenceItemEntity();
+        mapper.applyRequest(entity, request);
+        return mapper.toModel(mdReportInReferenceItemRepository.save(entity));
     }
 
     @Override
-    public MdReportInReferenceItemEntity createMdReportInReferenceItem(MdReportInReferenceItemEntity mdReportInReferenceItem) {
-        return mdReportInReferenceItemRepository.save(mdReportInReferenceItem);
-    }
-
-    @Override
-    public MdReportInReferenceItemEntity updateMdReportInReferenceItem(Long id, MdReportInReferenceItemEntity mdReportInReferenceItem) {
-        return mdReportInReferenceItemRepository.findById(id)
-                .map(existing -> {
-                    existing.setReportIn(mdReportInReferenceItem.getReportIn());
-                    existing.setReferenceItem(mdReportInReferenceItem.getReferenceItem());
-                    existing.setTypeFieldValue(mdReportInReferenceItem.getTypeFieldValue());
-                    existing.setIndexColumn(mdReportInReferenceItem.getIndexColumn());
-                    existing.setOrderSort(mdReportInReferenceItem.getOrderSort());
-                    existing.setIsRequired(mdReportInReferenceItem.getIsRequired());
-                    return mdReportInReferenceItemRepository.save(existing);
-                })
+    @Transactional
+    public MdReportInReferenceItem updateMdReportInReferenceItem(Long id, MdReportInReferenceItemRequest request) {
+        MdReportInReferenceItemEntity entity = mdReportInReferenceItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("MdReportInReferenceItemEntity not found with id " + id));
+        mapper.applyRequest(entity, request);
+        return mapper.toModel(mdReportInReferenceItemRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void deleteMdReportInReferenceItem(Long id) {
         if (!mdReportInReferenceItemRepository.existsById(id)) {
             throw new RuntimeException("MdReportInReferenceItemEntity not found with id " + id);
         }
         mdReportInReferenceItemRepository.deleteById(id);
     }
+
 }

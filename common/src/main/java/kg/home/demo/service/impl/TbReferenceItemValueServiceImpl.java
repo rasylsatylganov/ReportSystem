@@ -1,57 +1,63 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.TbReferenceItemValueEntity;
+import kg.home.demo.mapper.TbReferenceItemValueMapper;
+import kg.home.demo.model.TbReferenceItemValue;
+import kg.home.demo.model.TbReferenceItemValueRequest;
 import kg.home.demo.repository.TbReferenceItemValueRepository;
 import kg.home.demo.service.TbReferenceItemValueService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TbReferenceItemValueServiceImpl implements TbReferenceItemValueService {
 
+
     private final TbReferenceItemValueRepository tbReferenceItemValueRepository;
+    private final TbReferenceItemValueMapper mapper;
 
-    public TbReferenceItemValueServiceImpl(TbReferenceItemValueRepository tbReferenceItemValueRepository) {
-        this.tbReferenceItemValueRepository = tbReferenceItemValueRepository;
+    @Override
+    public List<TbReferenceItemValue> getAllTbReferenceItemValues() {
+        return tbReferenceItemValueRepository.findAll().stream()
+                .map(mapper::toModel)
+                .toList();
     }
 
     @Override
-    public List<TbReferenceItemValueEntity> getAllTbReferenceItemValues() {
-        return tbReferenceItemValueRepository.findAll();
+    public Optional<TbReferenceItemValue> getTbReferenceItemValueById(Long id) {
+        return tbReferenceItemValueRepository.findById(id).map(mapper::toModel);
     }
 
     @Override
-    public Optional<TbReferenceItemValueEntity> getTbReferenceItemValueById(Long id) {
-        return tbReferenceItemValueRepository.findById(id);
+    @Transactional
+    public TbReferenceItemValue createTbReferenceItemValue(TbReferenceItemValueRequest request) {
+        TbReferenceItemValueEntity entity = new TbReferenceItemValueEntity();
+        mapper.applyRequest(entity, request);
+        return mapper.toModel(tbReferenceItemValueRepository.save(entity));
     }
 
     @Override
-    public TbReferenceItemValueEntity createTbReferenceItemValue(TbReferenceItemValueEntity tbReferenceItemValue) {
-        return tbReferenceItemValueRepository.save(tbReferenceItemValue);
-    }
-
-    @Override
-    public TbReferenceItemValueEntity updateTbReferenceItemValue(Long id, TbReferenceItemValueEntity tbReferenceItemValue) {
-        return tbReferenceItemValueRepository.findById(id)
-                .map(existing -> {
-                    existing.setReferenceItem(tbReferenceItemValue.getReferenceItem());
-                    existing.setReportInReferenceItem(tbReferenceItemValue.getReportInReferenceItem());
-                    existing.setValueNumber(tbReferenceItemValue.getValueNumber());
-                    existing.setValueString(tbReferenceItemValue.getValueString());
-                    existing.setValueDatetime(tbReferenceItemValue.getValueDatetime());
-                    existing.setIndexRow(tbReferenceItemValue.getIndexRow());
-                    return tbReferenceItemValueRepository.save(existing);
-                })
+    @Transactional
+    public TbReferenceItemValue updateTbReferenceItemValue(Long id, TbReferenceItemValueRequest request) {
+        TbReferenceItemValueEntity entity = tbReferenceItemValueRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("TbReferenceItemValueEntity not found with id " + id));
+        mapper.applyRequest(entity, request);
+        return mapper.toModel(tbReferenceItemValueRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void deleteTbReferenceItemValue(Long id) {
         if (!tbReferenceItemValueRepository.existsById(id)) {
             throw new RuntimeException("TbReferenceItemValueEntity not found with id " + id);
         }
         tbReferenceItemValueRepository.deleteById(id);
     }
+
 }

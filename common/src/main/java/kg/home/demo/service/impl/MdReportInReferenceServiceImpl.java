@@ -1,56 +1,63 @@
 package kg.home.demo.service.impl;
 
 import kg.home.demo.entity.MdReportInReferenceEntity;
+import kg.home.demo.mapper.MdReportInReferenceMapper;
+import kg.home.demo.model.MdReportInReference;
+import kg.home.demo.model.MdReportInReferenceRequest;
 import kg.home.demo.repository.MdReportInReferenceRepository;
 import kg.home.demo.service.MdReportInReferenceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MdReportInReferenceServiceImpl implements MdReportInReferenceService {
 
+
     private final MdReportInReferenceRepository mdReportInReferenceRepository;
+    private final MdReportInReferenceMapper mapper;
 
-    public MdReportInReferenceServiceImpl(MdReportInReferenceRepository mdReportInReferenceRepository) {
-        this.mdReportInReferenceRepository = mdReportInReferenceRepository;
+    @Override
+    public List<MdReportInReference> getAllMdReportInReferences() {
+        return mdReportInReferenceRepository.findAll().stream()
+                .map(mapper::toModel)
+                .toList();
     }
 
     @Override
-    public List<MdReportInReferenceEntity> getAllMdReportInReferences() {
-        return mdReportInReferenceRepository.findAll();
+    public Optional<MdReportInReference> getMdReportInReferenceById(Long id) {
+        return mdReportInReferenceRepository.findById(id).map(mapper::toModel);
     }
 
     @Override
-    public Optional<MdReportInReferenceEntity> getMdReportInReferenceById(Long id) {
-        return mdReportInReferenceRepository.findById(id);
+    @Transactional
+    public MdReportInReference createMdReportInReference(MdReportInReferenceRequest request) {
+        MdReportInReferenceEntity entity = new MdReportInReferenceEntity();
+        mapper.applyRequest(entity, request);
+        return mapper.toModel(mdReportInReferenceRepository.save(entity));
     }
 
     @Override
-    public MdReportInReferenceEntity createMdReportInReference(MdReportInReferenceEntity mdReportInReference) {
-        return mdReportInReferenceRepository.save(mdReportInReference);
-    }
-
-    @Override
-    public MdReportInReferenceEntity updateMdReportInReference(Long id, MdReportInReferenceEntity mdReportInReference) {
-        return mdReportInReferenceRepository.findById(id)
-                .map(existing -> {
-                    existing.setReportIn(mdReportInReference.getReportIn());
-                    existing.setReference(mdReportInReference.getReference());
-                    existing.setTypePosition(mdReportInReference.getTypePosition());
-                    existing.setIndexNum(mdReportInReference.getIndexNum());
-                    existing.setOrderSort(mdReportInReference.getOrderSort());
-                    return mdReportInReferenceRepository.save(existing);
-                })
+    @Transactional
+    public MdReportInReference updateMdReportInReference(Long id, MdReportInReferenceRequest request) {
+        MdReportInReferenceEntity entity = mdReportInReferenceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("MdReportInReferenceEntity not found with id " + id));
+        mapper.applyRequest(entity, request);
+        return mapper.toModel(mdReportInReferenceRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void deleteMdReportInReference(Long id) {
         if (!mdReportInReferenceRepository.existsById(id)) {
             throw new RuntimeException("MdReportInReferenceEntity not found with id " + id);
         }
         mdReportInReferenceRepository.deleteById(id);
     }
+
 }

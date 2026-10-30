@@ -1,19 +1,20 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.DrTypeEnterpriseEntity;
+import kg.home.demo.model.DrTypeEnterprise;
+import kg.home.demo.model.DrTypeEnterpriseRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface DrTypeEnterpriseService {
 
-    List<DrTypeEnterpriseEntity> getAllDrTypeEnterprises();
+    List<DrTypeEnterprise> getAllDrTypeEnterprises();
 
-    Optional<DrTypeEnterpriseEntity> getDrTypeEnterpriseById(Long id);
+    Optional<DrTypeEnterprise> getDrTypeEnterpriseById(Long id);
 
-    DrTypeEnterpriseEntity createDrTypeEnterprise(DrTypeEnterpriseEntity drTypeEnterprise);
+    DrTypeEnterprise createDrTypeEnterprise(DrTypeEnterpriseRequest request);
 
-    DrTypeEnterpriseEntity updateDrTypeEnterprise(Long id, DrTypeEnterpriseEntity drTypeEnterprise);
+    DrTypeEnterprise updateDrTypeEnterprise(Long id, DrTypeEnterpriseRequest request);
 
     void deleteDrTypeEnterprise(Long id);
 }

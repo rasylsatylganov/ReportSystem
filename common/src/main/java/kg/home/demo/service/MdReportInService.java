@@ -1,19 +1,20 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.MdReportInEntity;
+import kg.home.demo.model.MdReportIn;
+import kg.home.demo.model.MdReportInRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MdReportInService {
 
-    List<MdReportInEntity> getAllMdReportIns();
+    List<MdReportIn> getAllMdReportIns();
 
-    Optional<MdReportInEntity> getMdReportInById(Long id);
+    Optional<MdReportIn> getMdReportInById(Long id);
 
-    MdReportInEntity createMdReportIn(MdReportInEntity mdReportIn);
+    MdReportIn createMdReportIn(MdReportInRequest request);
 
-    MdReportInEntity updateMdReportIn(Long id, MdReportInEntity mdReportIn);
+    MdReportIn updateMdReportIn(Long id, MdReportInRequest request);
 
     void deleteMdReportIn(Long id);
 }

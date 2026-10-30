@@ -1,6 +1,7 @@
 package kg.home.demo.controller;
 
-import kg.home.demo.entity.DrEnterpriseEntity;
+import kg.home.demo.model.DrEnterprise;
+import kg.home.demo.model.DrEnterpriseRequest;
 import kg.home.demo.service.DrEnterpriseService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class DrEnterpriseController {
 
     // Получить все предприятия
     @GetMapping
-    public ResponseEntity<List<DrEnterpriseEntity>> getAllDrEnterprises() {
+    public ResponseEntity<List<DrEnterprise>> getAllDrEnterprises() {
         return ResponseEntity.ok(
                 drEnterpriseService.getAllDrEnterprises()
         );
@@ -29,7 +30,7 @@ public class DrEnterpriseController {
 
     // Получить предприятие по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrEnterpriseEntity> getDrEnterpriseById(
+    public ResponseEntity<DrEnterprise> getDrEnterpriseById(
             @PathVariable("id") Long id
     ) {
         return drEnterpriseService.getDrEnterpriseById(id)
@@ -39,12 +40,11 @@ public class DrEnterpriseController {
 
     // Создать предприятие
     @PostMapping
-    public ResponseEntity<DrEnterpriseEntity> createDrEnterprise(
-            @RequestBody DrEnterpriseEntity drEnterprise
+    public ResponseEntity<DrEnterprise> createDrEnterprise(
+            @RequestBody DrEnterpriseRequest drEnterprise
     ) {
-        drEnterprise.setId(null);
 
-        DrEnterpriseEntity saved =
+        DrEnterprise saved =
                 drEnterpriseService.createDrEnterprise(drEnterprise);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
@@ -52,12 +52,12 @@ public class DrEnterpriseController {
 
     // Обновить предприятие
     @PutMapping("/{id}")
-    public ResponseEntity<DrEnterpriseEntity> updateDrEnterprise(
+    public ResponseEntity<DrEnterprise> updateDrEnterprise(
             @PathVariable("id") Long id,
-            @RequestBody DrEnterpriseEntity drEnterprise
+            @RequestBody DrEnterpriseRequest drEnterprise
     ) {
         try {
-            DrEnterpriseEntity updated =
+            DrEnterprise updated =
                     drEnterpriseService.updateDrEnterprise(id, drEnterprise);
 
             return ResponseEntity.ok(updated);

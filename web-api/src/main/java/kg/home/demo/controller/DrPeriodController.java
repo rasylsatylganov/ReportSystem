@@ -1,6 +1,7 @@
 package kg.home.demo.controller;
 
-import kg.home.demo.entity.DrPeriodEntity;
+import kg.home.demo.model.DrPeriod;
+import kg.home.demo.model.DrPeriodRequest;
 import kg.home.demo.service.DrPeriodService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class DrPeriodController {
 
     // Получить все периоды
     @GetMapping
-    public ResponseEntity<List<DrPeriodEntity>> getAllDrPeriods() {
+    public ResponseEntity<List<DrPeriod>> getAllDrPeriods() {
         return ResponseEntity.ok(
                 drPeriodService.getAllDrPeriods()
         );
@@ -29,7 +30,7 @@ public class DrPeriodController {
 
     // Получить период по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrPeriodEntity> getDrPeriodById(
+    public ResponseEntity<DrPeriod> getDrPeriodById(
             @PathVariable("id") Long id
     ) {
         return drPeriodService.getDrPeriodById(id)
@@ -39,24 +40,23 @@ public class DrPeriodController {
 
     // Создать период
     @PostMapping
-    public ResponseEntity<DrPeriodEntity> createDrPeriod(
-            @RequestBody DrPeriodEntity drPeriod
+    public ResponseEntity<DrPeriod> createDrPeriod(
+            @RequestBody DrPeriodRequest drPeriod
     ) {
-        drPeriod.setId(null);
 
-        DrPeriodEntity saved = drPeriodService.createDrPeriod(drPeriod);
+        DrPeriod saved = drPeriodService.createDrPeriod(drPeriod);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     // Обновить период
     @PutMapping("/{id}")
-    public ResponseEntity<DrPeriodEntity> updateDrPeriod(
+    public ResponseEntity<DrPeriod> updateDrPeriod(
             @PathVariable("id") Long id,
-            @RequestBody DrPeriodEntity drPeriod
+            @RequestBody DrPeriodRequest drPeriod
     ) {
         try {
-            DrPeriodEntity updated = drPeriodService.updateDrPeriod(id, drPeriod);
+            DrPeriod updated = drPeriodService.updateDrPeriod(id, drPeriod);
 
             return ResponseEntity.ok(updated);
         } catch (DataAccessException e) {

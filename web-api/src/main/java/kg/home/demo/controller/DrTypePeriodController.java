@@ -1,7 +1,8 @@
 package kg.home.demo.controller;
 
 import jakarta.persistence.EntityNotFoundException;
-import kg.home.demo.entity.DrTypePeriodEntity;
+import kg.home.demo.model.DrTypePeriod;
+import kg.home.demo.model.DrTypePeriodRequest;
 import kg.home.demo.service.DrTypePeriodService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,25 +23,25 @@ public class DrTypePeriodController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DrTypePeriodEntity>> getAllDrTypePeriods() {
+    public ResponseEntity<List<DrTypePeriod>> getAllDrTypePeriods() {
         return ResponseEntity.ok(service.getAllDrTypePeriods());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DrTypePeriodEntity> getDrTypePeriodById(@PathVariable("id") Long id) {
+    public ResponseEntity<DrTypePeriod> getDrTypePeriodById(@PathVariable("id") Long id) {
         return service.getDrTypePeriodById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<DrTypePeriodEntity> createDrTypePeriod(@RequestBody DrTypePeriodEntity period) {
+    public ResponseEntity<DrTypePeriod> createDrTypePeriod(@RequestBody DrTypePeriodRequest period) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createDrTypePeriod(period));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DrTypePeriodEntity> updateDrTypePeriod(
-            @PathVariable("id") Long id, @RequestBody DrTypePeriodEntity period) {
+    public ResponseEntity<DrTypePeriod> updateDrTypePeriod(
+            @PathVariable("id") Long id, @RequestBody DrTypePeriodRequest period) {
         return ResponseEntity.ok(service.updateDrTypePeriod(id, period));
     }
 

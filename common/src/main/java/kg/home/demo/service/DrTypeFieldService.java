@@ -1,19 +1,20 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.DrTypeFieldEntity;
+import kg.home.demo.model.DrTypeField;
+import kg.home.demo.model.DrTypeFieldRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface DrTypeFieldService {
 
-    List<DrTypeFieldEntity> getAllDrTypeFields();
+    List<DrTypeField> getAllDrTypeFields();
 
-    Optional<DrTypeFieldEntity> getDrTypeFieldById(Long id);
+    Optional<DrTypeField> getDrTypeFieldById(Long id);
 
-    DrTypeFieldEntity createDrTypeField(DrTypeFieldEntity drTypeField);
+    DrTypeField createDrTypeField(DrTypeFieldRequest request);
 
-    DrTypeFieldEntity updateDrTypeField(Long id, DrTypeFieldEntity drTypeField);
+    DrTypeField updateDrTypeField(Long id, DrTypeFieldRequest request);
 
     void deleteDrTypeField(Long id);
 }

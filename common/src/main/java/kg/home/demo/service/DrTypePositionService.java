@@ -1,19 +1,20 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.DrTypePositionEntity;
+import kg.home.demo.model.DrTypePosition;
+import kg.home.demo.model.DrTypePositionRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface DrTypePositionService {
 
-    List<DrTypePositionEntity> getAllDrTypePositions();
+    List<DrTypePosition> getAllDrTypePositions();
 
-    Optional<DrTypePositionEntity> getDrTypePositionById(Long id);
+    Optional<DrTypePosition> getDrTypePositionById(Long id);
 
-    DrTypePositionEntity createDrTypePosition(DrTypePositionEntity drTypePosition);
+    DrTypePosition createDrTypePosition(DrTypePositionRequest request);
 
-    DrTypePositionEntity updateDrTypePosition(Long id, DrTypePositionEntity drTypePosition);
+    DrTypePosition updateDrTypePosition(Long id, DrTypePositionRequest request);
 
     void deleteDrTypePosition(Long id);
 }

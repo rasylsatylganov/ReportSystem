@@ -1,6 +1,7 @@
 package kg.home.demo.controller;
 
-import kg.home.demo.entity.DrTypeEnterpriseEntity;
+import kg.home.demo.model.DrTypeEnterprise;
+import kg.home.demo.model.DrTypeEnterpriseRequest;
 import kg.home.demo.service.DrTypeEnterpriseService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class DrTypeEnterpriseController {
 
     // Получить все типы предприятий
     @GetMapping
-    public ResponseEntity<List<DrTypeEnterpriseEntity>> getAllDrTypeEnterprises() {
+    public ResponseEntity<List<DrTypeEnterprise>> getAllDrTypeEnterprises() {
         return ResponseEntity.ok(
                 drTypeEnterpriseService.getAllDrTypeEnterprises()
         );
@@ -31,7 +32,7 @@ public class DrTypeEnterpriseController {
 
     // Получить тип предприятия по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrTypeEnterpriseEntity> getDrTypeEnterpriseById(
+    public ResponseEntity<DrTypeEnterprise> getDrTypeEnterpriseById(
             @PathVariable("id") Long id
     ) {
         return drTypeEnterpriseService.getDrTypeEnterpriseById(id)
@@ -41,12 +42,11 @@ public class DrTypeEnterpriseController {
 
     // Создать тип предприятия
     @PostMapping
-    public ResponseEntity<DrTypeEnterpriseEntity> createDrTypeEnterprise(
-            @RequestBody DrTypeEnterpriseEntity drTypeEnterprise
+    public ResponseEntity<DrTypeEnterprise> createDrTypeEnterprise(
+            @RequestBody DrTypeEnterpriseRequest drTypeEnterprise
     ) {
-        drTypeEnterprise.setId(null);
 
-        DrTypeEnterpriseEntity saved =
+        DrTypeEnterprise saved =
                 drTypeEnterpriseService.createDrTypeEnterprise(drTypeEnterprise);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
@@ -54,12 +54,12 @@ public class DrTypeEnterpriseController {
 
     // Обновить тип предприятия
     @PutMapping("/{id}")
-    public ResponseEntity<DrTypeEnterpriseEntity> updateDrTypeEnterprise(
+    public ResponseEntity<DrTypeEnterprise> updateDrTypeEnterprise(
             @PathVariable("id") Long id,
-            @RequestBody DrTypeEnterpriseEntity drTypeEnterprise
+            @RequestBody DrTypeEnterpriseRequest drTypeEnterprise
     ) {
         try {
-            DrTypeEnterpriseEntity updated =
+            DrTypeEnterprise updated =
                     drTypeEnterpriseService.updateDrTypeEnterprise(
                             id, drTypeEnterprise
                     );
