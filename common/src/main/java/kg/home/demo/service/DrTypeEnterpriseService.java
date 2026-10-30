@@ -18,4 +18,8 @@ public interface DrTypeEnterpriseService {
     DrTypeEnterprise updateDrTypeEnterprise(Long id, DrTypeEnterpriseRequest request);
 
     void deleteDrTypeEnterprise(Long id);
+
+    void moveUp(Long id);
+
+    void moveDown(Long id);
 }

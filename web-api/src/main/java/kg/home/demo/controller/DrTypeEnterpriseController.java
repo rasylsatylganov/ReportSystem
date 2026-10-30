@@ -26,7 +26,7 @@ public class DrTypeEnterpriseController implements DrTypeEnterpriseControllerApi
             int size) {
 
         return ResponseEntity.ok(
-                drTypeEnterpriseService.findAllDrTypeEnterprises(PageRequest.of(page, size, Sort.by("id"))));
+                drTypeEnterpriseService.findAllDrTypeEnterprises(PageRequest.of(page, size, Sort.by("sortIndex", "id"))));
     }
 
     @Override
@@ -36,9 +36,7 @@ public class DrTypeEnterpriseController implements DrTypeEnterpriseControllerApi
     }
 
     @Override
-    public ResponseEntity<DrTypeEnterprise> createDrTypeEnterprise(
-            DrTypeEnterpriseRequest request) {
-
+    public ResponseEntity<DrTypeEnterprise> createDrTypeEnterprise(DrTypeEnterpriseRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(drTypeEnterpriseService.createDrTypeEnterprise(request));
     }
 
@@ -52,6 +50,18 @@ public class DrTypeEnterpriseController implements DrTypeEnterpriseControllerApi
     @Override
     public ResponseEntity<Void> deleteDrTypeEnterprise(Long id) {
         drTypeEnterpriseService.deleteDrTypeEnterprise(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveUp(Long id) {
+        drTypeEnterpriseService.moveUp(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveDown(Long id) {
+        drTypeEnterpriseService.moveDown(id);
         return ResponseEntity.noContent().build();
     }
 }

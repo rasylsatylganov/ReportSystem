@@ -31,7 +31,7 @@ public interface DrTypeEnterpriseControllerApi {
 
     @Operation(summary = "Получить страницу записей",
             operationId = "DrTypeEnterprise_findAllDrTypeEnterprises",
-            description = "Нумерация страниц начинается с 0; размер от 1 до 100, по умолчанию 20. Сортировка по id.")
+            description = "Нумерация страниц начинается с 0; размер от 1 до 100, по умолчанию 20. Сортировка по sortIndex, затем id.")
     @ApiResponse(responseCode = "200", description = "Операция выполнена", useReturnTypeSchema = true)
     @GetMapping
     ResponseEntity<PageResult<DrTypeEnterprise>> findAllDrTypeEnterprises(
@@ -57,8 +57,7 @@ public interface DrTypeEnterpriseControllerApi {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
     @PostMapping
-    ResponseEntity<DrTypeEnterprise> createDrTypeEnterprise(
-            @Valid @RequestBody DrTypeEnterpriseRequest request);
+    ResponseEntity<DrTypeEnterprise> createDrTypeEnterprise(@Valid @RequestBody DrTypeEnterpriseRequest request);
 
     @Operation(summary = "Обновить запись",
             operationId = "DrTypeEnterprise_updateDrTypeEnterprise")
@@ -84,4 +83,26 @@ public interface DrTypeEnterpriseControllerApi {
                     schema = @Schema(implementation = ErrorResponse.class)))
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteDrTypeEnterprise(@PathVariable("id") @Positive Long id);
+
+    @Operation(summary = "Переместить запись вверх",
+            operationId = "DrTypeEnterprise_moveUp",
+            description = "Перестановка с соседней записью в полном списке, включая границы страниц. " +
+                    "На границе списка операция ничего не меняет.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена, тело ответа отсутствует", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Запись или связанный объект не найдены",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-up")
+    ResponseEntity<Void> moveUp(@PathVariable("id") @Positive Long id);
+
+    @Operation(summary = "Переместить запись вниз",
+            operationId = "DrTypeEnterprise_moveDown",
+            description = "Перестановка с соседней записью в полном списке, включая границы страниц. " +
+                    "На границе списка операция ничего не меняет.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена, тело ответа отсутствует", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Запись или связанный объект не найдены",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-down")
+    ResponseEntity<Void> moveDown(@PathVariable("id") @Positive Long id);
 }

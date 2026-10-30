@@ -20,7 +20,8 @@ public class DrTypeEnterpriseMapper {
         return new DrTypeEnterprise(
                 entity.getId(),
                 entity.getCodeTypeEnterprise(),
-                entity.getNameTypeEnterprise()
+                entity.getNameTypeEnterprise(),
+                entity.getSortIndex()
         );
     }
 }
