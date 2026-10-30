@@ -29,8 +29,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorResponse> handleDomain(DomainException exception) {
-        HttpStatus status = exception instanceof ResourceNotFoundException ?
-                HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        HttpStatus status = exception instanceof ResourceNotFoundException ? HttpStatus.NOT_FOUND :
+                exception instanceof TemplateConflictException ?
+                        HttpStatus.CONFLICT : HttpStatus.BAD_REQUEST;
         if (exception.isPrintStack()) {
             log.error("Ошибка операции приложения", exception);
         }
