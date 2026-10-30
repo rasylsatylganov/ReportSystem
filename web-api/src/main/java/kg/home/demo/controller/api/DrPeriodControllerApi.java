@@ -31,12 +31,14 @@ public interface DrPeriodControllerApi {
 
     @Operation(summary = "Получить страницу записей",
             operationId = "DrPeriod_findAllDrPeriods",
-            description = "Нумерация страниц начинается с 0; размер от 1 до 100, по умолчанию 20. Сортировка по id.")
+            description = "Страницы от 0, размер 1–100, по умолчанию 20. Сортировка по sortIndex, затем id. " +
+                    "Необязательный typePeriodId фильтрует по типу периода.")
     @ApiResponse(responseCode = "200", description = "Операция выполнена", useReturnTypeSchema = true)
     @GetMapping
     ResponseEntity<PageResult<DrPeriod>> findAllDrPeriods(
             @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size);
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
+            @RequestParam(required = false) @Positive Long typePeriodId);
 
     @Operation(summary = "Получить запись по ID",
             operationId = "DrPeriod_findDrPeriodById")
@@ -83,4 +85,24 @@ public interface DrPeriodControllerApi {
                     schema = @Schema(implementation = ErrorResponse.class)))
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteDrPeriod(@PathVariable("id") @Positive Long id);
+
+    @Operation(summary = "Переместить период вверх", operationId = "DrPeriod_moveUp",
+            description = "Обмен порядком с предыдущим периодом, в том числе через границу страниц. " +
+                    "typePeriodId ограничивает соседей выбранным типом. На границе списка — без изменений.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Период не найден в выбранном списке",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-up")
+    ResponseEntity<Void> moveUp(@PathVariable("id") @Positive Long id,
+            @RequestParam(required = false) @Positive Long typePeriodId);
+
+    @Operation(summary = "Переместить период вниз", operationId = "DrPeriod_moveDown",
+            description = "Обмен порядком со следующим периодом, в том числе через границу страниц. " +
+                    "typePeriodId ограничивает соседей выбранным типом. На границе списка — без изменений.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Период не найден в выбранном списке",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-down")
+    ResponseEntity<Void> moveDown(@PathVariable("id") @Positive Long id,
+            @RequestParam(required = false) @Positive Long typePeriodId);
 }

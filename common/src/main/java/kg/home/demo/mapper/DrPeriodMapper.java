@@ -33,7 +33,8 @@ public class DrPeriodMapper {
                 entity.getCodePeriod(),
                 entity.getNamePeriod(),
                 entity.getDateBegin(),
-                entity.getDateEnd()
+                entity.getDateEnd(),
+                entity.getSortIndex()
         );
     }
 }

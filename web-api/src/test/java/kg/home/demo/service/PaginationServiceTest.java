@@ -74,7 +74,7 @@ class PaginationServiceTest {
         DrPeriodRepository repository = mock(DrPeriodRepository.class);
         DrPeriodMapper mapper = mock(DrPeriodMapper.class);
         DrPeriodEntity entity = new DrPeriodEntity();
-        DrPeriod model = new DrPeriod(7L, null, "2026", "2026", null, null);
+        DrPeriod model = new DrPeriod(7L, null, "2026", "2026", null, null, 7L);
         PageRequest request = PageRequest.of(2, 20, Sort.by("id"));
         when(repository.findAll(request)).thenReturn(new PageImpl<>(List.of(entity), request, 41));
         when(mapper.toModel(entity)).thenReturn(model);

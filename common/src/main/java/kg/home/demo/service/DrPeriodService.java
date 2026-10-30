@@ -11,6 +11,8 @@ public interface DrPeriodService {
 
     PageResult<DrPeriod> findAllDrPeriods(Pageable pageable);
 
+    PageResult<DrPeriod> findDrPeriodsByType(Long typePeriodId, Pageable pageable);
+
     Optional<DrPeriod> findDrPeriodById(Long id);
 
     DrPeriod createDrPeriod(DrPeriodRequest request);
@@ -18,4 +20,8 @@ public interface DrPeriodService {
     DrPeriod updateDrPeriod(Long id, DrPeriodRequest request);
 
     void deleteDrPeriod(Long id);
+
+    void moveUp(Long id, Long typePeriodId);
+
+    void moveDown(Long id, Long typePeriodId);
 }

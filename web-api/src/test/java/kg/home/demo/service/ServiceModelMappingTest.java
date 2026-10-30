@@ -105,6 +105,7 @@ class ServiceModelMappingTest {
     @Test
     void createPeriodUsesManagedReferenceAndReturnsNestedModel() throws Exception {
         DrPeriodRepository repository = mock(DrPeriodRepository.class);
+        when(repository.nextSortIndex()).thenReturn(60L);
         EntityManager entityManager = mock(EntityManager.class);
         DrTypePeriodEntity typePeriodEntity = this.typePeriodEntity(7L, 50L);
         DrTypePeriod typePeriod = new DrTypePeriod(7L, "MON", "Месячный", 50L);
@@ -117,7 +118,7 @@ class ServiceModelMappingTest {
             return entity;
         });
         DrPeriodRequest request = this.objectMapper.readValue("""
-                {"id":999,"typePeriod":{"id":7,"nameTypePeriod":"Подмена"},
+                {"id":999,"sortIndex":-1,"typePeriod":{"id":7,"nameTypePeriod":"Подмена"},
                  "codePeriod":"2026M01","namePeriod":"Январь 2026",
                  "dateBegin":"2026-01-01","dateEnd":"2026-01-31"}
                 """, DrPeriodRequest.class);
@@ -128,6 +129,7 @@ class ServiceModelMappingTest {
         DrPeriod result = service.createDrPeriod(request);
 
         assertEquals(12L, result.id());
+        assertEquals(60L, result.sortIndex());
         assertEquals(typePeriod, result.typePeriod());
         assertEquals(LocalDate.of(2026, 1, 1), result.dateBegin());
         JsonNode json = this.objectMapper.valueToTree(result);

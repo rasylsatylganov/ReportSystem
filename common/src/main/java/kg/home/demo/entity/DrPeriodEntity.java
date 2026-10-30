@@ -44,4 +44,7 @@ public class DrPeriodEntity extends BaseEntity {
 
     @Column(name = "DATE_END", nullable = false)
     private LocalDate dateEnd;
+
+    @Column(name = "SORT_INDEX", nullable = false, precision = 19, scale = 0)
+    private Long sortIndex;
 }

@@ -23,10 +23,12 @@ public class DrPeriodController implements DrPeriodControllerApi {
     @Override
     public ResponseEntity<PageResult<DrPeriod>> findAllDrPeriods(
             int page,
-            int size) {
+            int size, Long typePeriodId) {
 
-        return ResponseEntity.ok(
-                drPeriodService.findAllDrPeriods(PageRequest.of(page, size, Sort.by("id"))));
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("sortIndex", "id"));
+        return ResponseEntity.ok(typePeriodId == null
+                ? drPeriodService.findAllDrPeriods(pageable)
+                : drPeriodService.findDrPeriodsByType(typePeriodId, pageable));
     }
 
     @Override
@@ -50,6 +52,18 @@ public class DrPeriodController implements DrPeriodControllerApi {
     @Override
     public ResponseEntity<Void> deleteDrPeriod(Long id) {
         drPeriodService.deleteDrPeriod(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveUp(Long id, Long typePeriodId) {
+        drPeriodService.moveUp(id, typePeriodId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveDown(Long id, Long typePeriodId) {
+        drPeriodService.moveDown(id, typePeriodId);
         return ResponseEntity.noContent().build();
     }
 }

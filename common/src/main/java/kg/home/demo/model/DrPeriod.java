@@ -8,6 +8,7 @@ public record DrPeriod(
         String codePeriod,
         String namePeriod,
         LocalDate dateBegin,
-        LocalDate dateEnd
+        LocalDate dateEnd,
+        Long sortIndex
 ) {
 }
