@@ -19,6 +19,9 @@ import kg.home.demo.repository.DrTypePeriodRepository;
 import kg.home.demo.service.impl.DrPeriodServiceImpl;
 import kg.home.demo.service.impl.DrTypePeriodServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
@@ -88,10 +91,11 @@ class ServiceModelMappingTest {
         DrTypePeriodRepository repository = mock(DrTypePeriodRepository.class);
         DrTypePeriodEntity first = this.typePeriodEntity(20L, 1L);
         DrTypePeriodEntity second = this.typePeriodEntity(10L, 2L);
-        when(repository.findAllByOrderBySortIndexAscIdAsc()).thenReturn(List.of(first, second));
+        PageRequest page = PageRequest.of(0, 20, Sort.by("sortIndex", "id"));
+        when(repository.findAll(page)).thenReturn(new PageImpl<>(List.of(first, second), page, 2));
 
         DrTypePeriodService service = new DrTypePeriodServiceImpl(repository, new DrTypePeriodMapper());
-        List<DrTypePeriod> result = service.findAllDrTypePeriods();
+        List<DrTypePeriod> result = service.findAllDrTypePeriods(page).content();
         first.setNameTypePeriod("Изменено после чтения");
 
         assertEquals(List.of(20L, 10L), result.stream().map(DrTypePeriod::id).toList());

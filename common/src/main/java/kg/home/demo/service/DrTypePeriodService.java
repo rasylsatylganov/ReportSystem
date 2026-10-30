@@ -2,13 +2,14 @@ package kg.home.demo.service;
 
 import kg.home.demo.model.DrTypePeriod;
 import kg.home.demo.model.DrTypePeriodRequest;
+import kg.home.demo.model.PageResult;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface DrTypePeriodService {
 
-    List<DrTypePeriod> findAllDrTypePeriods();
+    PageResult<DrTypePeriod> findAllDrTypePeriods(Pageable pageable);
 
     Optional<DrTypePeriod> findDrTypePeriodById(Long id);
 

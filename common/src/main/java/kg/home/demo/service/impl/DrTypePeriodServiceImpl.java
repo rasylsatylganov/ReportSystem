@@ -5,9 +5,11 @@ import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrTypePeriodMapper;
 import kg.home.demo.model.DrTypePeriod;
 import kg.home.demo.model.DrTypePeriodRequest;
+import kg.home.demo.model.PageResult;
 import kg.home.demo.repository.DrTypePeriodRepository;
 import kg.home.demo.service.DrTypePeriodService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +27,8 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
     private final DrTypePeriodMapper mapper;
 
     @Override
-    public List<DrTypePeriod> findAllDrTypePeriods() {
-        return repository.findAllByOrderBySortIndexAscIdAsc().stream()
-                .map(mapper::toModel)
-                .toList();
+    public PageResult<DrTypePeriod> findAllDrTypePeriods(Pageable pageable) {
+        return PageResult.from(repository.findAll(pageable).map(mapper::toModel));
     }
 
     @Override

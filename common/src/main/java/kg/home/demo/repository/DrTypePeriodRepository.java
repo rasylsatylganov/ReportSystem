@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface DrTypePeriodRepository extends JpaRepository<DrTypePeriodEntity, Long> {
 
-    List<DrTypePeriodEntity> findAllByOrderBySortIndexAscIdAsc();
-
     @Query(value = "SELECT DR_TYPE_PERIOD_SORT_SEQ.NEXTVAL FROM dual", nativeQuery = true)
     Long nextSortIndex();
 

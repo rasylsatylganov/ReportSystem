@@ -30,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PaginationTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"DrEnterprise", "DrPeriod", "DrReference", "DrReferenceItem"})
+    @ValueSource(strings = {"DrEnterprise", "DrPeriod", "DrReference", "DrReferenceItem",
+            "DrTypeEnterprise", "DrTypePeriod"})
     void validatesAndForwardsPagination(String resource) throws Exception {
         Class<?> serviceType = Class.forName("kg.home.demo.service." + resource + "Service");
         Object service = mock(serviceType);
@@ -47,6 +48,8 @@ class PaginationTest {
             case "DrEnterprise" -> "/api/dr-enterprises";
             case "DrPeriod" -> "/api/dr-periods";
             case "DrReference" -> "/api/dr-references";
+            case "DrTypeEnterprise" -> "/api/dr-type-enterprises";
+            case "DrTypePeriod" -> "/api/dr-type-periods";
             default -> "/api/dr-reference-items";
         };
 
@@ -65,12 +68,13 @@ class PaginationTest {
                     .andExpect(jsonPath("$.size").value(20))
                     .andExpect(jsonPath("$.totalElements").value(0))
                     .andExpect(jsonPath("$.totalPages").value(0));
-            listMethod.invoke(verify(service), PageRequest.of(0, 20, Sort.by("id")));
+            Sort sort = resource.equals("DrTypePeriod") ? Sort.by("sortIndex", "id") : Sort.by("id");
+            listMethod.invoke(verify(service), PageRequest.of(0, 20, sort));
             mvc.perform(get(path).param("page", "3").param("size", "5"))
                     .andExpect(status().isOk()).andExpect(jsonPath("$.page").value(3))
                     .andExpect(jsonPath("$.size").value(5))
                     .andExpect(jsonPath("$.content").isEmpty());
-            listMethod.invoke(verify(service), PageRequest.of(3, 5, Sort.by("id")));
+            listMethod.invoke(verify(service), PageRequest.of(3, 5, sort));
         }
     }
 }
