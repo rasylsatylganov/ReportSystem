@@ -134,6 +134,10 @@ mappedBy = "region" задан строковым литералом. Реком
 Правило: SPR-101.
 Объем: 1 конфигурация подключения.
 
+Статус выполнения: исправлено. В локальной конфигурации и файле-примере
+задано spring.datasource.hikari.pool-name=reporting-system-oracle-pool.
+Ниже сохранено исходное замечание аудита.
+
 Не настроено spring.datasource.hikari.pool-name.
 Расположение настроек:
   web-api/src/main/resources/application-local.properties
@@ -142,6 +146,11 @@ mappedBy = "region" задан строковым литералом. Реком
 8. НЕ НАСТРОЕНО ИМЯ ПРИЛОЖЕНИЯ ДЛЯ ORACLE-СЕССИЙ
 Правило: SPR-100.
 Объем: 1 конфигурация подключения.
+
+Статус выполнения: исправлено. В локальной конфигурации и файле-примере
+задано spring.datasource.hikari.data-source-properties.[v$session.program]=reporting-system.
+Настройка применяется к новым соединениям после перезапуска backend.
+Ниже сохранено исходное замечание аудита.
 
 Нет настройки через Hikari data-source-properties / v$session.program.
 Одного spring.application.name для выполнения правила недостаточно.

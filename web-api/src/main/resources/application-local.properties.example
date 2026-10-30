@@ -1,6 +1,8 @@
 # Copy to application-local.properties and set your Oracle connection.
 spring.application.name=reporting-system
 spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.hikari.pool-name=reporting-system-oracle-pool
+spring.datasource.hikari.data-source-properties.[v$session.program]=reporting-system
 spring.datasource.url=${ORACLE_JDBC_URL}
 spring.datasource.username=${ORACLE_USERNAME}
 spring.datasource.password=${ORACLE_PASSWORD}
