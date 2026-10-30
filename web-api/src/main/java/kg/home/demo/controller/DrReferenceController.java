@@ -1,9 +1,6 @@
 package kg.home.demo.controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Positive;
+import kg.home.demo.controller.api.DrReferenceControllerApi;
 import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.model.DrReference;
 import kg.home.demo.model.DrReferenceRequest;
@@ -14,45 +11,44 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/dr-references")
-public class DrReferenceController {
+public class DrReferenceController implements DrReferenceControllerApi {
 
 
     private final DrReferenceService drReferenceService;
 
-    @GetMapping
+    @Override
     public ResponseEntity<PageResult<DrReference>> findAllDrReferences(
-            @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
+            int page,
+            int size) {
 
         return ResponseEntity.ok(
                 drReferenceService.findAllDrReferences(PageRequest.of(page, size, Sort.by("id"))));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DrReference> findDrReferenceById(@PathVariable("id") @Positive Long id) {
+    @Override
+    public ResponseEntity<DrReference> findDrReferenceById(Long id) {
         return ResponseEntity.ok(drReferenceService.findDrReferenceById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Справочник", id)));
     }
 
-    @PostMapping
-    public ResponseEntity<DrReference> createDrReference(@Valid @RequestBody DrReferenceRequest request) {
+    @Override
+    public ResponseEntity<DrReference> createDrReference(DrReferenceRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(drReferenceService.createDrReference(request));
     }
 
-    @PutMapping("/{id}")
+    @Override
     public ResponseEntity<DrReference> updateDrReference(
-            @PathVariable("id") @Positive Long id, @Valid @RequestBody DrReferenceRequest request) {
+            Long id, DrReferenceRequest request) {
 
         return ResponseEntity.ok(drReferenceService.updateDrReference(id, request));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDrReference(@PathVariable("id") @Positive Long id) {
+    @Override
+    public ResponseEntity<Void> deleteDrReference(Long id) {
         drReferenceService.deleteDrReference(id);
         return ResponseEntity.noContent().build();
     }
