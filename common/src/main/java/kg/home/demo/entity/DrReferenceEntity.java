@@ -28,4 +28,7 @@ public class DrReferenceEntity extends BaseEntity {
 
     @Column(name = "NAME_REFERENCE", nullable = false, length = 300)
     private String nameReference;
+
+    @Column(name = "SORT_INDEX", nullable = false, precision = 19, scale = 0)
+    private Long sortIndex;
 }

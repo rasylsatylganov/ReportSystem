@@ -20,7 +20,8 @@ public class DrReferenceMapper {
         return new DrReference(
                 entity.getId(),
                 entity.getCodeReference(),
-                entity.getNameReference()
+                entity.getNameReference(),
+                entity.getSortIndex()
         );
     }
 }

@@ -13,6 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,44 +23,84 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class DrReferenceServiceImpl implements DrReferenceService {
 
-
-    private final DrReferenceRepository drReferenceRepository;
+    private final DrReferenceRepository repository;
     private final DrReferenceMapper mapper;
 
     @Override
     public PageResult<DrReference> findAllDrReferences(Pageable pageable) {
-        return PageResult.from(drReferenceRepository.findAll(pageable).map(mapper::toModel));
+        return PageResult.from(repository.findAll(pageable).map(mapper::toModel));
     }
 
     @Override
     public Optional<DrReference> findDrReferenceById(Long id) {
-        return drReferenceRepository.findById(id).map(mapper::toModel);
+        return repository.findById(id).map(mapper::toModel);
     }
 
     @Override
     @Transactional
     public DrReference createDrReference(DrReferenceRequest request) {
+        repository.findAllForUpdate();
         DrReferenceEntity entity = new DrReferenceEntity();
         mapper.applyRequest(entity, request);
-        return mapper.toModel(drReferenceRepository.save(entity));
+        entity.setSortIndex(repository.nextSortIndex());
+        return mapper.toModel(repository.save(entity));
     }
 
     @Override
     @Transactional
     public DrReference updateDrReference(Long id, DrReferenceRequest request) {
-        DrReferenceEntity entity = drReferenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Справочник", id));
-        mapper.applyRequest(entity, request);
-        return mapper.toModel(drReferenceRepository.save(entity));
+        DrReferenceEntity existing = findRequired(repository.findAllForUpdate(), id);
+        mapper.applyRequest(existing, request);
+        // Обычный PUT не меняет порядок записи.
+        return mapper.toModel(repository.save(existing));
     }
 
     @Override
     @Transactional
     public void deleteDrReference(Long id) {
-        if (!drReferenceRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Справочник", id);
+        DrReferenceEntity existing = findRequired(repository.findAllForUpdate(), id);
+        repository.delete(existing);
+    }
+
+    @Override
+    @Transactional
+    public void moveUp(Long id) {
+        move(id, -1);
+    }
+
+    @Override
+    @Transactional
+    public void moveDown(Long id) {
+        move(id, 1);
+    }
+
+    private void move(Long id, int offset) {
+        List<DrReferenceEntity> references = new ArrayList<>(repository.findAllForUpdate());
+        DrReferenceEntity current = findRequired(references, id);
+        references.sort(Comparator.comparing(DrReferenceEntity::getSortIndex)
+                .thenComparing(DrReferenceEntity::getId));
+
+        int currentIndex = references.indexOf(current);
+        int neighborIndex = currentIndex + offset;
+        // Граница списка: операция ничего не меняет.
+        if (neighborIndex < 0 || neighborIndex >= references.size()) {
+            return;
         }
-        drReferenceRepository.deleteById(id);
+
+        DrReferenceEntity neighbor = references.get(neighborIndex);
+        Long currentSortIndex = current.getSortIndex();
+        current.setSortIndex(neighbor.getSortIndex());
+        neighbor.setSortIndex(currentSortIndex);
+
+        repository.saveAll(List.of(current, neighbor));
+        repository.flush();
+    }
+
+    private DrReferenceEntity findRequired(List<DrReferenceEntity> references, Long id) {
+        return references.stream()
+                .filter(reference -> reference.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Справочник", id));
     }
 
 }

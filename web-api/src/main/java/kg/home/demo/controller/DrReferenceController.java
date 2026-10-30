@@ -26,7 +26,7 @@ public class DrReferenceController implements DrReferenceControllerApi {
             int size) {
 
         return ResponseEntity.ok(
-                drReferenceService.findAllDrReferences(PageRequest.of(page, size, Sort.by("id"))));
+                drReferenceService.findAllDrReferences(PageRequest.of(page, size, Sort.by("sortIndex", "id"))));
     }
 
     @Override
@@ -50,6 +50,18 @@ public class DrReferenceController implements DrReferenceControllerApi {
     @Override
     public ResponseEntity<Void> deleteDrReference(Long id) {
         drReferenceService.deleteDrReference(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveUp(Long id) {
+        drReferenceService.moveUp(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveDown(Long id) {
+        drReferenceService.moveDown(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -18,4 +18,8 @@ public interface DrReferenceService {
     DrReference updateDrReference(Long id, DrReferenceRequest request);
 
     void deleteDrReference(Long id);
+
+    void moveUp(Long id);
+
+    void moveDown(Long id);
 }
