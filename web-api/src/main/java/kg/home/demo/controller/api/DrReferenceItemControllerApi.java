@@ -17,7 +17,7 @@ import kg.home.demo.model.PageResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Элементы справочников")
+@Tag(name = "Значения справочников")
 @RequestMapping("/api/dr-reference-items")
 @ApiResponses({
         @ApiResponse(responseCode = "400", description = "Некорректные параметры или тело запроса",
@@ -31,12 +31,14 @@ public interface DrReferenceItemControllerApi {
 
     @Operation(summary = "Получить страницу записей",
             operationId = "DrReferenceItem_findAllDrReferenceItems",
-            description = "Нумерация страниц начинается с 0; размер от 1 до 100, по умолчанию 20. Сортировка по id.")
+            description = "Страницы от 0, размер 1–100, по умолчанию 20. Сортировка по sortIndex, затем id. " +
+                    "Необязательный referenceId фильтрует по справочнику.")
     @ApiResponse(responseCode = "200", description = "Операция выполнена", useReturnTypeSchema = true)
     @GetMapping
     ResponseEntity<PageResult<DrReferenceItem>> findAllDrReferenceItems(
             @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size);
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
+            @RequestParam(required = false) @Positive Long referenceId);
 
     @Operation(summary = "Получить запись по ID",
             operationId = "DrReferenceItem_findDrReferenceItemById")
@@ -83,4 +85,24 @@ public interface DrReferenceItemControllerApi {
                     schema = @Schema(implementation = ErrorResponse.class)))
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteDrReferenceItem(@PathVariable("id") @Positive Long id);
+
+    @Operation(summary = "Переместить значение справочника вверх", operationId = "DrReferenceItem_moveUp",
+            description = "Обмен порядком с предыдущим значением, в том числе через границу страниц. " +
+                    "referenceId ограничивает соседей выбранным справочником. На границе списка — без изменений.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Значение справочника не найдено в выбранном списке",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-up")
+    ResponseEntity<Void> moveUp(@PathVariable("id") @Positive Long id,
+            @RequestParam(required = false) @Positive Long referenceId);
+
+    @Operation(summary = "Переместить значение справочника вниз", operationId = "DrReferenceItem_moveDown",
+            description = "Обмен порядком со следующим значением, в том числе через границу страниц. " +
+                    "referenceId ограничивает соседей выбранным справочником. На границе списка — без изменений.")
+    @ApiResponse(responseCode = "204", description = "Операция выполнена", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Значение справочника не найдено в выбранном списке",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @PostMapping("/{id}/move-down")
+    ResponseEntity<Void> moveDown(@PathVariable("id") @Positive Long id,
+            @RequestParam(required = false) @Positive Long referenceId);
 }

@@ -5,6 +5,6 @@ public record DrReferenceItem(
         DrReference reference,
         String codeReferenceItem,
         String nameReferenceItem,
-        Long orderSort
+        Long sortIndex
 ) {
 }

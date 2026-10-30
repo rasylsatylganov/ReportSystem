@@ -125,7 +125,7 @@ class RequestValidationTest {
                 new DrEnterpriseRequest(reference, "1000001", "Предприятие"),
                 new DrPeriodRequest(reference, "2026M01", "Январь",
                         LocalDate.of(2026, 1, 1), LocalDate.of(2026, 1, 31)),
-                new DrReferenceItemRequest(reference, "KG", "Кыргызстан", null),
+                new DrReferenceItemRequest(reference, "KG", "Кыргызстан"),
                 new DrReferenceRequest("country", "Страны"),
                 new DrTypeEnterpriseRequest("banks", "Банки"),
                 new DrTypeFieldRequest("NUMBER", "Число"),

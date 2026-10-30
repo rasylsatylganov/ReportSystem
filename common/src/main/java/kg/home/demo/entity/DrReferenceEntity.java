@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
+@BatchSize(size = 100)
 @Table(
         name = "DR_REFERENCE",
         uniqueConstraints = {

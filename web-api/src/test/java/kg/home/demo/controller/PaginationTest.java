@@ -69,7 +69,8 @@ class PaginationTest {
                     .andExpect(jsonPath("$.totalElements").value(0))
                     .andExpect(jsonPath("$.totalPages").value(0));
             Sort sort = resource.equals("DrTypePeriod") || resource.equals("DrTypeEnterprise") ||
-                    resource.equals("DrReference") || resource.equals("DrPeriod") || resource.equals("DrEnterprise") ?
+                    resource.equals("DrReference") || resource.equals("DrPeriod") || resource.equals("DrEnterprise") ||
+                    resource.equals("DrReferenceItem") ?
                     Sort.by("sortIndex", "id") : Sort.by("id");
             listMethod.invoke(verify(service), PageRequest.of(0, 20, sort));
             mvc.perform(get(path).param("page", "3").param("size", "5"))

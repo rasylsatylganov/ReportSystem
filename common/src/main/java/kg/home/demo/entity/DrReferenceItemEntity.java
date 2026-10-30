@@ -37,6 +37,6 @@ public class DrReferenceItemEntity extends BaseEntity {
     @Column(name = "NAME_REFERENCE_ITEM", nullable = false, length = 300)
     private String nameReferenceItem;
 
-    @Column(name = "ORDER_SORT", precision = 10, scale = 0)
-    private Long orderSort;
+    @Column(name = "SORT_INDEX", nullable = false, precision = 19, scale = 0)
+    private Long sortIndex;
 }

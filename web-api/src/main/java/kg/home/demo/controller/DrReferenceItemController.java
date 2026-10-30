@@ -23,16 +23,18 @@ public class DrReferenceItemController implements DrReferenceItemControllerApi {
     @Override
     public ResponseEntity<PageResult<DrReferenceItem>> findAllDrReferenceItems(
             int page,
-            int size) {
+            int size, Long referenceId) {
 
-        return ResponseEntity.ok(
-                drReferenceItemService.findAllDrReferenceItems(PageRequest.of(page, size, Sort.by("id"))));
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("sortIndex", "id"));
+        return ResponseEntity.ok(referenceId == null
+                ? drReferenceItemService.findAllDrReferenceItems(pageable)
+                : drReferenceItemService.findDrReferenceItemsByReference(referenceId, pageable));
     }
 
     @Override
     public ResponseEntity<DrReferenceItem> findDrReferenceItemById(Long id) {
         return ResponseEntity.ok(drReferenceItemService.findDrReferenceItemById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Элемент справочника", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Значение справочника", id)));
     }
 
     @Override
@@ -50,6 +52,18 @@ public class DrReferenceItemController implements DrReferenceItemControllerApi {
     @Override
     public ResponseEntity<Void> deleteDrReferenceItem(Long id) {
         drReferenceItemService.deleteDrReferenceItem(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveUp(Long id, Long referenceId) {
+        drReferenceItemService.moveUp(id, referenceId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> moveDown(Long id, Long referenceId) {
+        drReferenceItemService.moveDown(id, referenceId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -19,7 +19,6 @@ public class DrReferenceItemMapper {
         entity.setReference(referenceResolver.resolve(DrReferenceEntity.class, request.reference()));
         entity.setCodeReferenceItem(request.codeReferenceItem());
         entity.setNameReferenceItem(request.nameReferenceItem());
-        entity.setOrderSort(request.orderSort());
     }
 
     public DrReferenceItem toModel(DrReferenceItemEntity entity) {
@@ -31,7 +30,7 @@ public class DrReferenceItemMapper {
                 drReferenceMapper.toModel(entity.getReference()),
                 entity.getCodeReferenceItem(),
                 entity.getNameReferenceItem(),
-                entity.getOrderSort()
+                entity.getSortIndex()
         );
     }
 }
