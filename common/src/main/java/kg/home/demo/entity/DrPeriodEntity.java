@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DrPeriodEntity {
+public class DrPeriodEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dr_period_seq_gen")

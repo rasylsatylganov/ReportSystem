@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TbReferenceItemValueEntity {
+public class TbReferenceItemValueEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(

@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DrTypeFieldEntity {
+public class DrTypeFieldEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(

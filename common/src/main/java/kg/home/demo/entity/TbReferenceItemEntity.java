@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TbReferenceItemEntity {
+public class TbReferenceItemEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "tb_reference_item_seq_gen")

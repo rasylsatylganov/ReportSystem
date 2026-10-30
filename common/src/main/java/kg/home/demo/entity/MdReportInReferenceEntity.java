@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MdReportInReferenceEntity {
+public class MdReportInReferenceEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "md_report_in_reference_seq_gen")
