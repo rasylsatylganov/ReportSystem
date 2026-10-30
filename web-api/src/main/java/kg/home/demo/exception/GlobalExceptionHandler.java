@@ -101,7 +101,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ErrorResponse body = status.is5xxServerError() ? this.frameworkError(status) :
                 new ErrorResponse(ErrorCode.VALIDATION_ERROR,
-                        "Проверьте параметры запроса: ID должен быть положительным.");
+                        "Проверьте параметры запроса: значения выходят за допустимые границы.");
         return this.handleExceptionInternal(exception, body, headers, status, request);
     }
 

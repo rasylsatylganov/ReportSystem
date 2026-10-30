@@ -2,13 +2,14 @@ package kg.home.demo.service;
 
 import kg.home.demo.model.DrEnterprise;
 import kg.home.demo.model.DrEnterpriseRequest;
+import kg.home.demo.model.PageResult;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface DrEnterpriseService {
 
-    List<DrEnterprise> findAllDrEnterprises();
+    PageResult<DrEnterprise> findAllDrEnterprises(Pageable pageable);
 
     Optional<DrEnterprise> findDrEnterpriseById(Long id);
 

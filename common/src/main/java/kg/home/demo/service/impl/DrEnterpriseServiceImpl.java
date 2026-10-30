@@ -5,13 +5,14 @@ import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrEnterpriseMapper;
 import kg.home.demo.model.DrEnterprise;
 import kg.home.demo.model.DrEnterpriseRequest;
+import kg.home.demo.model.PageResult;
 import kg.home.demo.repository.DrEnterpriseRepository;
 import kg.home.demo.service.DrEnterpriseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,10 +25,8 @@ public class DrEnterpriseServiceImpl implements DrEnterpriseService {
     private final DrEnterpriseMapper mapper;
 
     @Override
-    public List<DrEnterprise> findAllDrEnterprises() {
-        return drEnterpriseRepository.findAll().stream()
-                .map(mapper::toModel)
-                .toList();
+    public PageResult<DrEnterprise> findAllDrEnterprises(Pageable pageable) {
+        return PageResult.from(drEnterpriseRepository.findAll(pageable).map(mapper::toModel));
     }
 
     @Override

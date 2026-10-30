@@ -2,13 +2,14 @@ package kg.home.demo.service;
 
 import kg.home.demo.model.DrReferenceItem;
 import kg.home.demo.model.DrReferenceItemRequest;
+import kg.home.demo.model.PageResult;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface DrReferenceItemService {
 
-    List<DrReferenceItem> findAllDrReferenceItems();
+    PageResult<DrReferenceItem> findAllDrReferenceItems(Pageable pageable);
 
     Optional<DrReferenceItem> findDrReferenceItemById(Long id);
 

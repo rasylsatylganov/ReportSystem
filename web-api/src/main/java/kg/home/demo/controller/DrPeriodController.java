@@ -1,17 +1,20 @@
 package kg.home.demo.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.model.DrPeriod;
 import kg.home.demo.model.DrPeriodRequest;
+import kg.home.demo.model.PageResult;
 import kg.home.demo.service.DrPeriodService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +25,12 @@ public class DrPeriodController {
     private final DrPeriodService drPeriodService;
 
     @GetMapping
-    public ResponseEntity<List<DrPeriod>> findAllDrPeriods() {
-        return ResponseEntity.ok(drPeriodService.findAllDrPeriods());
+    public ResponseEntity<PageResult<DrPeriod>> findAllDrPeriods(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
+
+        return ResponseEntity.ok(
+                drPeriodService.findAllDrPeriods(PageRequest.of(page, size, Sort.by("id"))));
     }
 
     @GetMapping("/{id}")

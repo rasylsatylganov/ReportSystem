@@ -5,13 +5,14 @@ import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrReferenceItemMapper;
 import kg.home.demo.model.DrReferenceItem;
 import kg.home.demo.model.DrReferenceItemRequest;
+import kg.home.demo.model.PageResult;
 import kg.home.demo.repository.DrReferenceItemRepository;
 import kg.home.demo.service.DrReferenceItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,10 +25,8 @@ public class DrReferenceItemServiceImpl implements DrReferenceItemService {
     private final DrReferenceItemMapper mapper;
 
     @Override
-    public List<DrReferenceItem> findAllDrReferenceItems() {
-        return drReferenceItemRepository.findAll().stream()
-                .map(mapper::toModel)
-                .toList();
+    public PageResult<DrReferenceItem> findAllDrReferenceItems(Pageable pageable) {
+        return PageResult.from(drReferenceItemRepository.findAll(pageable).map(mapper::toModel));
     }
 
     @Override

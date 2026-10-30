@@ -5,13 +5,14 @@ import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.mapper.DrPeriodMapper;
 import kg.home.demo.model.DrPeriod;
 import kg.home.demo.model.DrPeriodRequest;
+import kg.home.demo.model.PageResult;
 import kg.home.demo.repository.DrPeriodRepository;
 import kg.home.demo.service.DrPeriodService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,10 +25,8 @@ public class DrPeriodServiceImpl implements DrPeriodService {
     private final DrPeriodMapper mapper;
 
     @Override
-    public List<DrPeriod> findAllDrPeriods() {
-        return drPeriodRepository.findAll().stream()
-                .map(mapper::toModel)
-                .toList();
+    public PageResult<DrPeriod> findAllDrPeriods(Pageable pageable) {
+        return PageResult.from(drPeriodRepository.findAll(pageable).map(mapper::toModel));
     }
 
     @Override
