@@ -24,14 +24,14 @@ public class DrTypeEnterpriseServiceImpl implements DrTypeEnterpriseService {
     private final DrTypeEnterpriseMapper mapper;
 
     @Override
-    public List<DrTypeEnterprise> getAllDrTypeEnterprises() {
+    public List<DrTypeEnterprise> findAllDrTypeEnterprises() {
         return drTypeEnterpriseRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<DrTypeEnterprise> getDrTypeEnterpriseById(Long id) {
+    public Optional<DrTypeEnterprise> findDrTypeEnterpriseById(Long id) {
         return drTypeEnterpriseRepository.findById(id).map(mapper::toModel);
     }
 

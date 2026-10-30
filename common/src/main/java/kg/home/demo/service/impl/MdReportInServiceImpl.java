@@ -24,14 +24,14 @@ public class MdReportInServiceImpl implements MdReportInService {
     private final MdReportInMapper mapper;
 
     @Override
-    public List<MdReportIn> getAllMdReportIns() {
+    public List<MdReportIn> findAllMdReportIns() {
         return mdReportInRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<MdReportIn> getMdReportInById(Long id) {
+    public Optional<MdReportIn> findMdReportInById(Long id) {
         return mdReportInRepository.findById(id).map(mapper::toModel);
     }
 

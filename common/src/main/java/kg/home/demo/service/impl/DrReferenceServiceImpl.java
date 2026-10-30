@@ -24,14 +24,14 @@ public class DrReferenceServiceImpl implements DrReferenceService {
     private final DrReferenceMapper mapper;
 
     @Override
-    public List<DrReference> getAllDrReferences() {
+    public List<DrReference> findAllDrReferences() {
         return drReferenceRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<DrReference> getDrReferenceById(Long id) {
+    public Optional<DrReference> findDrReferenceById(Long id) {
         return drReferenceRepository.findById(id).map(mapper::toModel);
     }
 

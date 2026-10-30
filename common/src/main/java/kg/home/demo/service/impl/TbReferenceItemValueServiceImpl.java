@@ -24,14 +24,14 @@ public class TbReferenceItemValueServiceImpl implements TbReferenceItemValueServ
     private final TbReferenceItemValueMapper mapper;
 
     @Override
-    public List<TbReferenceItemValue> getAllTbReferenceItemValues() {
+    public List<TbReferenceItemValue> findAllTbReferenceItemValues() {
         return tbReferenceItemValueRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<TbReferenceItemValue> getTbReferenceItemValueById(Long id) {
+    public Optional<TbReferenceItemValue> findTbReferenceItemValueById(Long id) {
         return tbReferenceItemValueRepository.findById(id).map(mapper::toModel);
     }
 

@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DrTypePositionService {
 
-    List<DrTypePosition> getAllDrTypePositions();
+    List<DrTypePosition> findAllDrTypePositions();
 
-    Optional<DrTypePosition> getDrTypePositionById(Long id);
+    Optional<DrTypePosition> findDrTypePositionById(Long id);
 
     DrTypePosition createDrTypePosition(DrTypePositionRequest request);
 

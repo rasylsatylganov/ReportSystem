@@ -24,14 +24,14 @@ public class DrTypePositionServiceImpl implements DrTypePositionService {
     private final DrTypePositionMapper mapper;
 
     @Override
-    public List<DrTypePosition> getAllDrTypePositions() {
+    public List<DrTypePosition> findAllDrTypePositions() {
         return drTypePositionRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<DrTypePosition> getDrTypePositionById(Long id) {
+    public Optional<DrTypePosition> findDrTypePositionById(Long id) {
         return drTypePositionRepository.findById(id).map(mapper::toModel);
     }
 

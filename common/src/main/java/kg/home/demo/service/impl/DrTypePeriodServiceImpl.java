@@ -25,14 +25,14 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
     private final DrTypePeriodMapper mapper;
 
     @Override
-    public List<DrTypePeriod> getAllDrTypePeriods() {
+    public List<DrTypePeriod> findAllDrTypePeriods() {
         return repository.findAllByOrderBySortIndexAscIdAsc().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<DrTypePeriod> getDrTypePeriodById(Long id) {
+    public Optional<DrTypePeriod> findDrTypePeriodById(Long id) {
         return repository.findById(id).map(mapper::toModel);
     }
 

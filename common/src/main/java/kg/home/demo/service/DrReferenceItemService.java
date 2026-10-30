@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DrReferenceItemService {
 
-    List<DrReferenceItem> getAllDrReferenceItems();
+    List<DrReferenceItem> findAllDrReferenceItems();
 
-    Optional<DrReferenceItem> getDrReferenceItemById(Long id);
+    Optional<DrReferenceItem> findDrReferenceItemById(Long id);
 
     DrReferenceItem createDrReferenceItem(DrReferenceItemRequest request);
 

@@ -22,13 +22,13 @@ public class DrTypeEnterpriseController {
     private final DrTypeEnterpriseService drTypeEnterpriseService;
 
     @GetMapping
-    public ResponseEntity<List<DrTypeEnterprise>> getAllDrTypeEnterprises() {
-        return ResponseEntity.ok(drTypeEnterpriseService.getAllDrTypeEnterprises());
+    public ResponseEntity<List<DrTypeEnterprise>> findAllDrTypeEnterprises() {
+        return ResponseEntity.ok(drTypeEnterpriseService.findAllDrTypeEnterprises());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DrTypeEnterprise> getDrTypeEnterpriseById(@PathVariable("id") @Positive Long id) {
-        return ResponseEntity.ok(drTypeEnterpriseService.getDrTypeEnterpriseById(id)
+    public ResponseEntity<DrTypeEnterprise> findDrTypeEnterpriseById(@PathVariable("id") @Positive Long id) {
+        return ResponseEntity.ok(drTypeEnterpriseService.findDrTypeEnterpriseById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Тип предприятия", id)));
     }
 

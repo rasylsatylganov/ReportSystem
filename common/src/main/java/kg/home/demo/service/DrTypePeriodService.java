@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DrTypePeriodService {
 
-    List<DrTypePeriod> getAllDrTypePeriods();
+    List<DrTypePeriod> findAllDrTypePeriods();
 
-    Optional<DrTypePeriod> getDrTypePeriodById(Long id);
+    Optional<DrTypePeriod> findDrTypePeriodById(Long id);
 
     DrTypePeriod createDrTypePeriod(DrTypePeriodRequest request);
 

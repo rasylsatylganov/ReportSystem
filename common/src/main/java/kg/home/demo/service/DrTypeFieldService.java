@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DrTypeFieldService {
 
-    List<DrTypeField> getAllDrTypeFields();
+    List<DrTypeField> findAllDrTypeFields();
 
-    Optional<DrTypeField> getDrTypeFieldById(Long id);
+    Optional<DrTypeField> findDrTypeFieldById(Long id);
 
     DrTypeField createDrTypeField(DrTypeFieldRequest request);
 

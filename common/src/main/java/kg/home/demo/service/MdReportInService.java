@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface MdReportInService {
 
-    List<MdReportIn> getAllMdReportIns();
+    List<MdReportIn> findAllMdReportIns();
 
-    Optional<MdReportIn> getMdReportInById(Long id);
+    Optional<MdReportIn> findMdReportInById(Long id);
 
     MdReportIn createMdReportIn(MdReportInRequest request);
 

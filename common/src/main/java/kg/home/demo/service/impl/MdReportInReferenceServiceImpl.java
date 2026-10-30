@@ -24,14 +24,14 @@ public class MdReportInReferenceServiceImpl implements MdReportInReferenceServic
     private final MdReportInReferenceMapper mapper;
 
     @Override
-    public List<MdReportInReference> getAllMdReportInReferences() {
+    public List<MdReportInReference> findAllMdReportInReferences() {
         return mdReportInReferenceRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<MdReportInReference> getMdReportInReferenceById(Long id) {
+    public Optional<MdReportInReference> findMdReportInReferenceById(Long id) {
         return mdReportInReferenceRepository.findById(id).map(mapper::toModel);
     }
 

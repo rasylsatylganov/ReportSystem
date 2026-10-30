@@ -24,14 +24,14 @@ public class DrPeriodServiceImpl implements DrPeriodService {
     private final DrPeriodMapper mapper;
 
     @Override
-    public List<DrPeriod> getAllDrPeriods() {
+    public List<DrPeriod> findAllDrPeriods() {
         return drPeriodRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<DrPeriod> getDrPeriodById(Long id) {
+    public Optional<DrPeriod> findDrPeriodById(Long id) {
         return drPeriodRepository.findById(id).map(mapper::toModel);
     }
 

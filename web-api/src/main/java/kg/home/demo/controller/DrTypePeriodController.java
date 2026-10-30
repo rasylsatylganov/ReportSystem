@@ -22,13 +22,13 @@ public class DrTypePeriodController {
     private final DrTypePeriodService drTypePeriodService;
 
     @GetMapping
-    public ResponseEntity<List<DrTypePeriod>> getAllDrTypePeriods() {
-        return ResponseEntity.ok(drTypePeriodService.getAllDrTypePeriods());
+    public ResponseEntity<List<DrTypePeriod>> findAllDrTypePeriods() {
+        return ResponseEntity.ok(drTypePeriodService.findAllDrTypePeriods());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DrTypePeriod> getDrTypePeriodById(@PathVariable("id") @Positive Long id) {
-        return ResponseEntity.ok(drTypePeriodService.getDrTypePeriodById(id)
+    public ResponseEntity<DrTypePeriod> findDrTypePeriodById(@PathVariable("id") @Positive Long id) {
+        return ResponseEntity.ok(drTypePeriodService.findDrTypePeriodById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Тип периода", id)));
     }
 

@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface TbReferenceItemService {
 
-    List<TbReferenceItem> getAllTbReferenceItems();
+    List<TbReferenceItem> findAllTbReferenceItems();
 
-    Optional<TbReferenceItem> getTbReferenceItemById(Long id);
+    Optional<TbReferenceItem> findTbReferenceItemById(Long id);
 
     TbReferenceItem createTbReferenceItem(TbReferenceItemRequest request);
 

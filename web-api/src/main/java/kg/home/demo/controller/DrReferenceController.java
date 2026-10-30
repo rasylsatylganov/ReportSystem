@@ -22,13 +22,13 @@ public class DrReferenceController {
     private final DrReferenceService drReferenceService;
 
     @GetMapping
-    public ResponseEntity<List<DrReference>> getAllDrReferences() {
-        return ResponseEntity.ok(drReferenceService.getAllDrReferences());
+    public ResponseEntity<List<DrReference>> findAllDrReferences() {
+        return ResponseEntity.ok(drReferenceService.findAllDrReferences());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DrReference> getDrReferenceById(@PathVariable("id") @Positive Long id) {
-        return ResponseEntity.ok(drReferenceService.getDrReferenceById(id)
+    public ResponseEntity<DrReference> findDrReferenceById(@PathVariable("id") @Positive Long id) {
+        return ResponseEntity.ok(drReferenceService.findDrReferenceById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Справочник", id)));
     }
 

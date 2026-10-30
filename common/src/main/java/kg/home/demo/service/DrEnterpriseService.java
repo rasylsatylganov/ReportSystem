@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DrEnterpriseService {
 
-    List<DrEnterprise> getAllDrEnterprises();
+    List<DrEnterprise> findAllDrEnterprises();
 
-    Optional<DrEnterprise> getDrEnterpriseById(Long id);
+    Optional<DrEnterprise> findDrEnterpriseById(Long id);
 
     DrEnterprise createDrEnterprise(DrEnterpriseRequest request);
 

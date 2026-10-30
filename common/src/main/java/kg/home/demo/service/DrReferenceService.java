@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DrReferenceService {
 
-    List<DrReference> getAllDrReferences();
+    List<DrReference> findAllDrReferences();
 
-    Optional<DrReference> getDrReferenceById(Long id);
+    Optional<DrReference> findDrReferenceById(Long id);
 
     DrReference createDrReference(DrReferenceRequest request);
 

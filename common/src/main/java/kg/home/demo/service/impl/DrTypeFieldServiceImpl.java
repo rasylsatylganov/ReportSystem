@@ -24,14 +24,14 @@ public class DrTypeFieldServiceImpl implements DrTypeFieldService {
     private final DrTypeFieldMapper mapper;
 
     @Override
-    public List<DrTypeField> getAllDrTypeFields() {
+    public List<DrTypeField> findAllDrTypeFields() {
         return drTypeFieldRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<DrTypeField> getDrTypeFieldById(Long id) {
+    public Optional<DrTypeField> findDrTypeFieldById(Long id) {
         return drTypeFieldRepository.findById(id).map(mapper::toModel);
     }
 

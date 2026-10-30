@@ -91,7 +91,7 @@ class ServiceModelMappingTest {
         when(repository.findAllByOrderBySortIndexAscIdAsc()).thenReturn(List.of(first, second));
 
         DrTypePeriodService service = new DrTypePeriodServiceImpl(repository, new DrTypePeriodMapper());
-        List<DrTypePeriod> result = service.getAllDrTypePeriods();
+        List<DrTypePeriod> result = service.findAllDrTypePeriods();
         first.setNameTypePeriod("Изменено после чтения");
 
         assertEquals(List.of(20L, 10L), result.stream().map(DrTypePeriod::id).toList());
@@ -137,7 +137,7 @@ class ServiceModelMappingTest {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
         DrTypePeriodService service = new DrTypePeriodServiceImpl(repository, new DrTypePeriodMapper());
-        assertTrue(service.getDrTypePeriodById(99L).isEmpty());
+        assertTrue(service.findDrTypePeriodById(99L).isEmpty());
     }
 
     @Test

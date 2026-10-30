@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface MdReportInReferenceItemService {
 
-    List<MdReportInReferenceItem> getAllMdReportInReferenceItems();
+    List<MdReportInReferenceItem> findAllMdReportInReferenceItems();
 
-    Optional<MdReportInReferenceItem> getMdReportInReferenceItemById(Long id);
+    Optional<MdReportInReferenceItem> findMdReportInReferenceItemById(Long id);
 
     MdReportInReferenceItem createMdReportInReferenceItem(MdReportInReferenceItemRequest request);
 

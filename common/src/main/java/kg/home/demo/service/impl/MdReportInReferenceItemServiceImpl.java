@@ -24,14 +24,14 @@ public class MdReportInReferenceItemServiceImpl implements MdReportInReferenceIt
     private final MdReportInReferenceItemMapper mapper;
 
     @Override
-    public List<MdReportInReferenceItem> getAllMdReportInReferenceItems() {
+    public List<MdReportInReferenceItem> findAllMdReportInReferenceItems() {
         return mdReportInReferenceItemRepository.findAll().stream()
                 .map(mapper::toModel)
                 .toList();
     }
 
     @Override
-    public Optional<MdReportInReferenceItem> getMdReportInReferenceItemById(Long id) {
+    public Optional<MdReportInReferenceItem> findMdReportInReferenceItemById(Long id) {
         return mdReportInReferenceItemRepository.findById(id).map(mapper::toModel);
     }
 
