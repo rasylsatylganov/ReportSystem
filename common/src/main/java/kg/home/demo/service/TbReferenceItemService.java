@@ -1,19 +1,19 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.TbReferenceItem;
+import kg.home.demo.entity.TbReferenceItemEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TbReferenceItemService {
 
-    List<TbReferenceItem> getAllTbReferenceItems();
+    List<TbReferenceItemEntity> getAllTbReferenceItems();
 
-    Optional<TbReferenceItem> getTbReferenceItemById(Long id);
+    Optional<TbReferenceItemEntity> getTbReferenceItemById(Long id);
 
-    TbReferenceItem createTbReferenceItem(TbReferenceItem tbReferenceItem);
+    TbReferenceItemEntity createTbReferenceItem(TbReferenceItemEntity tbReferenceItem);
 
-    TbReferenceItem updateTbReferenceItem(Long id, TbReferenceItem tbReferenceItem);
+    TbReferenceItemEntity updateTbReferenceItem(Long id, TbReferenceItemEntity tbReferenceItem);
 
     void deleteTbReferenceItem(Long id);
 }

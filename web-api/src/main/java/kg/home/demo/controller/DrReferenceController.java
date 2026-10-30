@@ -1,6 +1,6 @@
 package kg.home.demo.controller;
 
-import kg.home.demo.entity.DrReference;
+import kg.home.demo.entity.DrReferenceEntity;
 import kg.home.demo.service.DrReferenceService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class DrReferenceController {
 
     // Получить все справочники
     @GetMapping
-    public ResponseEntity<List<DrReference>> getAllDrReferences() {
+    public ResponseEntity<List<DrReferenceEntity>> getAllDrReferences() {
         return ResponseEntity.ok(
                 drReferenceService.getAllDrReferences()
         );
@@ -29,7 +29,7 @@ public class DrReferenceController {
 
     // Получить справочник по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrReference> getDrReferenceById(
+    public ResponseEntity<DrReferenceEntity> getDrReferenceById(
             @PathVariable("id") Long id
     ) {
         return drReferenceService.getDrReferenceById(id)
@@ -39,24 +39,24 @@ public class DrReferenceController {
 
     // Создать справочник
     @PostMapping
-    public ResponseEntity<DrReference> createDrReference(
-            @RequestBody DrReference drReference
+    public ResponseEntity<DrReferenceEntity> createDrReference(
+            @RequestBody DrReferenceEntity drReference
     ) {
         drReference.setId(null);
 
-        DrReference saved = drReferenceService.createDrReference(drReference);
+        DrReferenceEntity saved = drReferenceService.createDrReference(drReference);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     // Обновить справочник
     @PutMapping("/{id}")
-    public ResponseEntity<DrReference> updateDrReference(
+    public ResponseEntity<DrReferenceEntity> updateDrReference(
             @PathVariable("id") Long id,
-            @RequestBody DrReference drReference
+            @RequestBody DrReferenceEntity drReference
     ) {
         try {
-            DrReference updated =
+            DrReferenceEntity updated =
                     drReferenceService.updateDrReference(id, drReference);
 
             return ResponseEntity.ok(updated);

@@ -1,16 +1,16 @@
 package kg.home.demo.repository;
 
 import jakarta.persistence.LockModeType;
-import kg.home.demo.entity.DrTypePeriod;
+import kg.home.demo.entity.DrTypePeriodEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface DrTypePeriodRepository extends JpaRepository<DrTypePeriod, Long> {
+public interface DrTypePeriodRepository extends JpaRepository<DrTypePeriodEntity, Long> {
 
-    List<DrTypePeriod> findAllByOrderBySortIndexAscIdAsc();
+    List<DrTypePeriodEntity> findAllByOrderBySortIndexAscIdAsc();
 
     @Query(value = "SELECT DR_TYPE_PERIOD_SORT_SEQ.NEXTVAL FROM dual", nativeQuery = true)
     Long nextSortIndex();
@@ -18,6 +18,6 @@ public interface DrTypePeriodRepository extends JpaRepository<DrTypePeriod, Long
     // Справочник маленький: блокируем его записи в одном порядке по ID.
     // Вызывать только внутри транзакции записи.
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select p from DrTypePeriod p order by p.id")
-    List<DrTypePeriod> findAllForUpdate();
+    @Query("select p from DrTypePeriodEntity p order by p.id")
+    List<DrTypePeriodEntity> findAllForUpdate();
 }

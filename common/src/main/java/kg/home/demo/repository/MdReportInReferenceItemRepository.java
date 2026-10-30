@@ -1,7 +1,7 @@
 package kg.home.demo.repository;
 
-import kg.home.demo.entity.MdReportInReferenceItem;
+import kg.home.demo.entity.MdReportInReferenceItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MdReportInReferenceItemRepository extends JpaRepository<MdReportInReferenceItem, Long> {
+public interface MdReportInReferenceItemRepository extends JpaRepository<MdReportInReferenceItemEntity, Long> {
 }

@@ -1,6 +1,6 @@
 package kg.home.demo.controller;
 
-import kg.home.demo.entity.DrPeriod;
+import kg.home.demo.entity.DrPeriodEntity;
 import kg.home.demo.service.DrPeriodService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class DrPeriodController {
 
     // Получить все периоды
     @GetMapping
-    public ResponseEntity<List<DrPeriod>> getAllDrPeriods() {
+    public ResponseEntity<List<DrPeriodEntity>> getAllDrPeriods() {
         return ResponseEntity.ok(
                 drPeriodService.getAllDrPeriods()
         );
@@ -29,7 +29,7 @@ public class DrPeriodController {
 
     // Получить период по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrPeriod> getDrPeriodById(
+    public ResponseEntity<DrPeriodEntity> getDrPeriodById(
             @PathVariable("id") Long id
     ) {
         return drPeriodService.getDrPeriodById(id)
@@ -39,24 +39,24 @@ public class DrPeriodController {
 
     // Создать период
     @PostMapping
-    public ResponseEntity<DrPeriod> createDrPeriod(
-            @RequestBody DrPeriod drPeriod
+    public ResponseEntity<DrPeriodEntity> createDrPeriod(
+            @RequestBody DrPeriodEntity drPeriod
     ) {
         drPeriod.setId(null);
 
-        DrPeriod saved = drPeriodService.createDrPeriod(drPeriod);
+        DrPeriodEntity saved = drPeriodService.createDrPeriod(drPeriod);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     // Обновить период
     @PutMapping("/{id}")
-    public ResponseEntity<DrPeriod> updateDrPeriod(
+    public ResponseEntity<DrPeriodEntity> updateDrPeriod(
             @PathVariable("id") Long id,
-            @RequestBody DrPeriod drPeriod
+            @RequestBody DrPeriodEntity drPeriod
     ) {
         try {
-            DrPeriod updated = drPeriodService.updateDrPeriod(id, drPeriod);
+            DrPeriodEntity updated = drPeriodService.updateDrPeriod(id, drPeriod);
 
             return ResponseEntity.ok(updated);
         } catch (DataAccessException e) {

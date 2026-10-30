@@ -1,6 +1,6 @@
 package kg.home.demo.service.impl;
 
-import kg.home.demo.entity.MdReportIn;
+import kg.home.demo.entity.MdReportInEntity;
 import kg.home.demo.repository.MdReportInRepository;
 import kg.home.demo.service.MdReportInService;
 import org.springframework.stereotype.Service;
@@ -18,22 +18,22 @@ public class MdReportInServiceImpl implements MdReportInService {
     }
 
     @Override
-    public List<MdReportIn> getAllMdReportIns() {
+    public List<MdReportInEntity> getAllMdReportIns() {
         return mdReportInRepository.findAll();
     }
 
     @Override
-    public Optional<MdReportIn> getMdReportInById(Long id) {
+    public Optional<MdReportInEntity> getMdReportInById(Long id) {
         return mdReportInRepository.findById(id);
     }
 
     @Override
-    public MdReportIn createMdReportIn(MdReportIn mdReportIn) {
+    public MdReportInEntity createMdReportIn(MdReportInEntity mdReportIn) {
         return mdReportInRepository.save(mdReportIn);
     }
 
     @Override
-    public MdReportIn updateMdReportIn(Long id, MdReportIn mdReportIn) {
+    public MdReportInEntity updateMdReportIn(Long id, MdReportInEntity mdReportIn) {
         return mdReportInRepository.findById(id)
                 .map(existing -> {
                     existing.setCodeReportIn(mdReportIn.getCodeReportIn());
@@ -44,13 +44,13 @@ public class MdReportInServiceImpl implements MdReportInService {
                     existing.setIndexRowScanEnd(mdReportIn.getIndexRowScanEnd());
                     return mdReportInRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("MdReportIn not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("MdReportInEntity not found with id " + id));
     }
 
     @Override
     public void deleteMdReportIn(Long id) {
         if (!mdReportInRepository.existsById(id)) {
-            throw new RuntimeException("MdReportIn not found with id " + id);
+            throw new RuntimeException("MdReportInEntity not found with id " + id);
         }
         mdReportInRepository.deleteById(id);
     }

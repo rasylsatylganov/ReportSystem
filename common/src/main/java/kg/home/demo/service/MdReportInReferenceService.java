@@ -1,19 +1,19 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.MdReportInReference;
+import kg.home.demo.entity.MdReportInReferenceEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MdReportInReferenceService {
 
-    List<MdReportInReference> getAllMdReportInReferences();
+    List<MdReportInReferenceEntity> getAllMdReportInReferences();
 
-    Optional<MdReportInReference> getMdReportInReferenceById(Long id);
+    Optional<MdReportInReferenceEntity> getMdReportInReferenceById(Long id);
 
-    MdReportInReference createMdReportInReference(MdReportInReference mdReportInReference);
+    MdReportInReferenceEntity createMdReportInReference(MdReportInReferenceEntity mdReportInReference);
 
-    MdReportInReference updateMdReportInReference(Long id, MdReportInReference mdReportInReference);
+    MdReportInReferenceEntity updateMdReportInReference(Long id, MdReportInReferenceEntity mdReportInReference);
 
     void deleteMdReportInReference(Long id);
 }

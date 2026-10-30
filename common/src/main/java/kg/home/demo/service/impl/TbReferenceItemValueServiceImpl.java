@@ -1,6 +1,6 @@
 package kg.home.demo.service.impl;
 
-import kg.home.demo.entity.TbReferenceItemValue;
+import kg.home.demo.entity.TbReferenceItemValueEntity;
 import kg.home.demo.repository.TbReferenceItemValueRepository;
 import kg.home.demo.service.TbReferenceItemValueService;
 import org.springframework.stereotype.Service;
@@ -18,22 +18,22 @@ public class TbReferenceItemValueServiceImpl implements TbReferenceItemValueServ
     }
 
     @Override
-    public List<TbReferenceItemValue> getAllTbReferenceItemValues() {
+    public List<TbReferenceItemValueEntity> getAllTbReferenceItemValues() {
         return tbReferenceItemValueRepository.findAll();
     }
 
     @Override
-    public Optional<TbReferenceItemValue> getTbReferenceItemValueById(Long id) {
+    public Optional<TbReferenceItemValueEntity> getTbReferenceItemValueById(Long id) {
         return tbReferenceItemValueRepository.findById(id);
     }
 
     @Override
-    public TbReferenceItemValue createTbReferenceItemValue(TbReferenceItemValue tbReferenceItemValue) {
+    public TbReferenceItemValueEntity createTbReferenceItemValue(TbReferenceItemValueEntity tbReferenceItemValue) {
         return tbReferenceItemValueRepository.save(tbReferenceItemValue);
     }
 
     @Override
-    public TbReferenceItemValue updateTbReferenceItemValue(Long id, TbReferenceItemValue tbReferenceItemValue) {
+    public TbReferenceItemValueEntity updateTbReferenceItemValue(Long id, TbReferenceItemValueEntity tbReferenceItemValue) {
         return tbReferenceItemValueRepository.findById(id)
                 .map(existing -> {
                     existing.setReferenceItem(tbReferenceItemValue.getReferenceItem());
@@ -44,13 +44,13 @@ public class TbReferenceItemValueServiceImpl implements TbReferenceItemValueServ
                     existing.setIndexRow(tbReferenceItemValue.getIndexRow());
                     return tbReferenceItemValueRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("TbReferenceItemValue not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("TbReferenceItemValueEntity not found with id " + id));
     }
 
     @Override
     public void deleteTbReferenceItemValue(Long id) {
         if (!tbReferenceItemValueRepository.existsById(id)) {
-            throw new RuntimeException("TbReferenceItemValue not found with id " + id);
+            throw new RuntimeException("TbReferenceItemValueEntity not found with id " + id);
         }
         tbReferenceItemValueRepository.deleteById(id);
     }

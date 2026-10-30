@@ -1,6 +1,6 @@
 package kg.home.demo.service.impl;
 
-import kg.home.demo.entity.DrPeriod;
+import kg.home.demo.entity.DrPeriodEntity;
 import kg.home.demo.repository.DrPeriodRepository;
 import kg.home.demo.service.DrPeriodService;
 import org.springframework.stereotype.Service;
@@ -18,22 +18,22 @@ public class DrPeriodServiceImpl implements DrPeriodService {
     }
 
     @Override
-    public List<DrPeriod> getAllDrPeriods() {
+    public List<DrPeriodEntity> getAllDrPeriods() {
         return drPeriodRepository.findAll();
     }
 
     @Override
-    public Optional<DrPeriod> getDrPeriodById(Long id) {
+    public Optional<DrPeriodEntity> getDrPeriodById(Long id) {
         return drPeriodRepository.findById(id);
     }
 
     @Override
-    public DrPeriod createDrPeriod(DrPeriod drPeriod) {
+    public DrPeriodEntity createDrPeriod(DrPeriodEntity drPeriod) {
         return drPeriodRepository.save(drPeriod);
     }
 
     @Override
-    public DrPeriod updateDrPeriod(Long id, DrPeriod drPeriod) {
+    public DrPeriodEntity updateDrPeriod(Long id, DrPeriodEntity drPeriod) {
         return drPeriodRepository.findById(id)
                 .map(existing -> {
                     existing.setTypePeriod(drPeriod.getTypePeriod());
@@ -43,13 +43,13 @@ public class DrPeriodServiceImpl implements DrPeriodService {
                     existing.setDateEnd(drPeriod.getDateEnd());
                     return drPeriodRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("DrPeriod not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("DrPeriodEntity not found with id " + id));
     }
 
     @Override
     public void deleteDrPeriod(Long id) {
         if (!drPeriodRepository.existsById(id)) {
-            throw new RuntimeException("DrPeriod not found with id " + id);
+            throw new RuntimeException("DrPeriodEntity not found with id " + id);
         }
         drPeriodRepository.deleteById(id);
     }

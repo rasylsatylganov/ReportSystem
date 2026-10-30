@@ -1,15 +1,15 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.DrTypePeriod;
+import kg.home.demo.entity.DrTypePeriodEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface DrTypePeriodService {
-    List<DrTypePeriod> getAllDrTypePeriods();
-    Optional<DrTypePeriod> getDrTypePeriodById(Long id);
-    DrTypePeriod createDrTypePeriod(DrTypePeriod drTypePeriod);
-    DrTypePeriod updateDrTypePeriod(Long id, DrTypePeriod drTypePeriod);
+    List<DrTypePeriodEntity> getAllDrTypePeriods();
+    Optional<DrTypePeriodEntity> getDrTypePeriodById(Long id);
+    DrTypePeriodEntity createDrTypePeriod(DrTypePeriodEntity drTypePeriod);
+    DrTypePeriodEntity updateDrTypePeriod(Long id, DrTypePeriodEntity drTypePeriod);
     void deleteDrTypePeriod(Long id);
     void moveUp(Long id);
     void moveDown(Long id);

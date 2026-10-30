@@ -1,7 +1,7 @@
 package kg.home.demo.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import kg.home.demo.entity.DrTypePeriod;
+import kg.home.demo.entity.DrTypePeriodEntity;
 import kg.home.demo.repository.DrTypePeriodRepository;
 import kg.home.demo.service.DrTypePeriodService;
 import org.springframework.stereotype.Service;
@@ -23,18 +23,18 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
     }
 
     @Override
-    public List<DrTypePeriod> getAllDrTypePeriods() {
+    public List<DrTypePeriodEntity> getAllDrTypePeriods() {
         return repository.findAllByOrderBySortIndexAscIdAsc();
     }
 
     @Override
-    public Optional<DrTypePeriod> getDrTypePeriodById(Long id) {
+    public Optional<DrTypePeriodEntity> getDrTypePeriodById(Long id) {
         return repository.findById(id);
     }
 
     @Override
     @Transactional
-    public DrTypePeriod createDrTypePeriod(DrTypePeriod drTypePeriod) {
+    public DrTypePeriodEntity createDrTypePeriod(DrTypePeriodEntity drTypePeriod) {
         validate(drTypePeriod);
         repository.findAllForUpdate();
         drTypePeriod.setId(null);
@@ -44,9 +44,9 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
 
     @Override
     @Transactional
-    public DrTypePeriod updateDrTypePeriod(Long id, DrTypePeriod drTypePeriod) {
+    public DrTypePeriodEntity updateDrTypePeriod(Long id, DrTypePeriodEntity drTypePeriod) {
         validate(drTypePeriod);
-        DrTypePeriod existing = findRequired(repository.findAllForUpdate(), id);
+        DrTypePeriodEntity existing = findRequired(repository.findAllForUpdate(), id);
         existing.setCodeTypePeriod(drTypePeriod.getCodeTypePeriod());
         existing.setNameTypePeriod(drTypePeriod.getNameTypePeriod());
         // Обычный PUT не меняет порядок записи.
@@ -56,7 +56,7 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
     @Override
     @Transactional
     public void deleteDrTypePeriod(Long id) {
-        DrTypePeriod existing = findRequired(repository.findAllForUpdate(), id);
+        DrTypePeriodEntity existing = findRequired(repository.findAllForUpdate(), id);
         repository.delete(existing);
     }
 
@@ -73,10 +73,10 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
     }
 
     private void move(Long id, int offset) {
-        List<DrTypePeriod> periods = new ArrayList<>(repository.findAllForUpdate());
-        DrTypePeriod current = findRequired(periods, id);
-        periods.sort(Comparator.comparing(DrTypePeriod::getSortIndex)
-                .thenComparing(DrTypePeriod::getId));
+        List<DrTypePeriodEntity> periods = new ArrayList<>(repository.findAllForUpdate());
+        DrTypePeriodEntity current = findRequired(periods, id);
+        periods.sort(Comparator.comparing(DrTypePeriodEntity::getSortIndex)
+                .thenComparing(DrTypePeriodEntity::getId));
 
         int currentIndex = periods.indexOf(current);
         int neighborIndex = currentIndex + offset;
@@ -85,7 +85,7 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
             return;
         }
 
-        DrTypePeriod neighbor = periods.get(neighborIndex);
+        DrTypePeriodEntity neighbor = periods.get(neighborIndex);
         Long currentSortIndex = current.getSortIndex();
         current.setSortIndex(neighbor.getSortIndex());
         neighbor.setSortIndex(currentSortIndex);
@@ -95,14 +95,14 @@ public class DrTypePeriodServiceImpl implements DrTypePeriodService {
         repository.flush();
     }
 
-    private DrTypePeriod findRequired(List<DrTypePeriod> periods, Long id) {
+    private DrTypePeriodEntity findRequired(List<DrTypePeriodEntity> periods, Long id) {
         return periods.stream()
                 .filter(period -> period.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Тип периода не найден: " + id));
     }
 
-    private void validate(DrTypePeriod period) {
+    private void validate(DrTypePeriodEntity period) {
         if (period.getCodeTypePeriod() == null || period.getCodeTypePeriod().isBlank()
                 || period.getCodeTypePeriod().length() > 3) {
             throw new IllegalArgumentException("Код обязателен и должен содержать не более 3 символов.");

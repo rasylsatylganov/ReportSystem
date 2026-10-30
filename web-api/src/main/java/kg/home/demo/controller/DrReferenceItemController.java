@@ -1,6 +1,6 @@
 package kg.home.demo.controller;
 
-import kg.home.demo.entity.DrReferenceItem;
+import kg.home.demo.entity.DrReferenceItemEntity;
 import kg.home.demo.service.DrReferenceItemService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class DrReferenceItemController {
 
     // Получить все элементы справочников
     @GetMapping
-    public ResponseEntity<List<DrReferenceItem>> getAllDrReferenceItems() {
+    public ResponseEntity<List<DrReferenceItemEntity>> getAllDrReferenceItems() {
         return ResponseEntity.ok(
                 drReferenceItemService.getAllDrReferenceItems()
         );
@@ -31,7 +31,7 @@ public class DrReferenceItemController {
 
     // Получить элемент справочника по ID
     @GetMapping("/{id}")
-    public ResponseEntity<DrReferenceItem> getDrReferenceItemById(
+    public ResponseEntity<DrReferenceItemEntity> getDrReferenceItemById(
             @PathVariable("id") Long id
     ) {
         return drReferenceItemService.getDrReferenceItemById(id)
@@ -41,12 +41,12 @@ public class DrReferenceItemController {
 
     // Создать элемент справочника
     @PostMapping
-    public ResponseEntity<DrReferenceItem> createDrReferenceItem(
-            @RequestBody DrReferenceItem drReferenceItem
+    public ResponseEntity<DrReferenceItemEntity> createDrReferenceItem(
+            @RequestBody DrReferenceItemEntity drReferenceItem
     ) {
         drReferenceItem.setId(null);
 
-        DrReferenceItem saved =
+        DrReferenceItemEntity saved =
                 drReferenceItemService.createDrReferenceItem(drReferenceItem);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
@@ -54,12 +54,12 @@ public class DrReferenceItemController {
 
     // Обновить элемент справочника
     @PutMapping("/{id}")
-    public ResponseEntity<DrReferenceItem> updateDrReferenceItem(
+    public ResponseEntity<DrReferenceItemEntity> updateDrReferenceItem(
             @PathVariable("id") Long id,
-            @RequestBody DrReferenceItem drReferenceItem
+            @RequestBody DrReferenceItemEntity drReferenceItem
     ) {
         try {
-            DrReferenceItem updated =
+            DrReferenceItemEntity updated =
                     drReferenceItemService.updateDrReferenceItem(
                             id, drReferenceItem
                     );

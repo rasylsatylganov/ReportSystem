@@ -1,7 +1,7 @@
 package kg.home.demo.repository;
 
-import kg.home.demo.entity.DrPeriod;
+import kg.home.demo.entity.DrPeriodEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DrPeriodRepository extends JpaRepository<DrPeriod, Long> {
+public interface DrPeriodRepository extends JpaRepository<DrPeriodEntity, Long> {
 }

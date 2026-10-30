@@ -1,6 +1,6 @@
 package kg.home.demo.service.impl;
 
-import kg.home.demo.entity.DrReference;
+import kg.home.demo.entity.DrReferenceEntity;
 import kg.home.demo.repository.DrReferenceRepository;
 import kg.home.demo.service.DrReferenceService;
 import org.springframework.stereotype.Service;
@@ -18,35 +18,35 @@ public class DrReferenceServiceImpl implements DrReferenceService {
     }
 
     @Override
-    public List<DrReference> getAllDrReferences() {
+    public List<DrReferenceEntity> getAllDrReferences() {
         return drReferenceRepository.findAll();
     }
 
     @Override
-    public Optional<DrReference> getDrReferenceById(Long id) {
+    public Optional<DrReferenceEntity> getDrReferenceById(Long id) {
         return drReferenceRepository.findById(id);
     }
 
     @Override
-    public DrReference createDrReference(DrReference drReference) {
+    public DrReferenceEntity createDrReference(DrReferenceEntity drReference) {
         return drReferenceRepository.save(drReference);
     }
 
     @Override
-    public DrReference updateDrReference(Long id, DrReference drReference) {
+    public DrReferenceEntity updateDrReference(Long id, DrReferenceEntity drReference) {
         return drReferenceRepository.findById(id)
                 .map(existing -> {
                     existing.setCodeReference(drReference.getCodeReference());
                     existing.setNameReference(drReference.getNameReference());
                     return drReferenceRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("DrReference not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("DrReferenceEntity not found with id " + id));
     }
 
     @Override
     public void deleteDrReference(Long id) {
         if (!drReferenceRepository.existsById(id)) {
-            throw new RuntimeException("DrReference not found with id " + id);
+            throw new RuntimeException("DrReferenceEntity not found with id " + id);
         }
         drReferenceRepository.deleteById(id);
     }

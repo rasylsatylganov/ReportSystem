@@ -1,19 +1,19 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.DrEnterprise;
+import kg.home.demo.entity.DrEnterpriseEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface DrEnterpriseService {
 
-    List<DrEnterprise> getAllDrEnterprises();
+    List<DrEnterpriseEntity> getAllDrEnterprises();
 
-    Optional<DrEnterprise> getDrEnterpriseById(Long id);
+    Optional<DrEnterpriseEntity> getDrEnterpriseById(Long id);
 
-    DrEnterprise createDrEnterprise(DrEnterprise drEnterprise);
+    DrEnterpriseEntity createDrEnterprise(DrEnterpriseEntity drEnterprise);
 
-    DrEnterprise updateDrEnterprise(Long id, DrEnterprise drEnterprise);
+    DrEnterpriseEntity updateDrEnterprise(Long id, DrEnterpriseEntity drEnterprise);
 
     void deleteDrEnterprise(Long id);
 }

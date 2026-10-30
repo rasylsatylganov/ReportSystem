@@ -1,19 +1,19 @@
 package kg.home.demo.service;
 
-import kg.home.demo.entity.DrReference;
+import kg.home.demo.entity.DrReferenceEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface DrReferenceService {
 
-    List<DrReference> getAllDrReferences();
+    List<DrReferenceEntity> getAllDrReferences();
 
-    Optional<DrReference> getDrReferenceById(Long id);
+    Optional<DrReferenceEntity> getDrReferenceById(Long id);
 
-    DrReference createDrReference(DrReference drReference);
+    DrReferenceEntity createDrReference(DrReferenceEntity drReference);
 
-    DrReference updateDrReference(Long id, DrReference drReference);
+    DrReferenceEntity updateDrReference(Long id, DrReferenceEntity drReference);
 
     void deleteDrReference(Long id);
 }

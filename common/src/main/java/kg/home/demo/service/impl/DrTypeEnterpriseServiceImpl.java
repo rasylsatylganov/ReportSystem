@@ -1,6 +1,6 @@
 package kg.home.demo.service.impl;
 
-import kg.home.demo.entity.DrTypeEnterprise;
+import kg.home.demo.entity.DrTypeEnterpriseEntity;
 import kg.home.demo.repository.DrTypeEnterpriseRepository;
 import kg.home.demo.service.DrTypeEnterpriseService;
 import org.springframework.stereotype.Service;
@@ -18,35 +18,35 @@ public class DrTypeEnterpriseServiceImpl implements DrTypeEnterpriseService {
     }
 
     @Override
-    public List<DrTypeEnterprise> getAllDrTypeEnterprises() {
+    public List<DrTypeEnterpriseEntity> getAllDrTypeEnterprises() {
         return drTypeEnterpriseRepository.findAll();
     }
 
     @Override
-    public Optional<DrTypeEnterprise> getDrTypeEnterpriseById(Long id) {
+    public Optional<DrTypeEnterpriseEntity> getDrTypeEnterpriseById(Long id) {
         return drTypeEnterpriseRepository.findById(id);
     }
 
     @Override
-    public DrTypeEnterprise createDrTypeEnterprise(DrTypeEnterprise drTypeEnterprise) {
+    public DrTypeEnterpriseEntity createDrTypeEnterprise(DrTypeEnterpriseEntity drTypeEnterprise) {
         return drTypeEnterpriseRepository.save(drTypeEnterprise);
     }
 
     @Override
-    public DrTypeEnterprise updateDrTypeEnterprise(Long id, DrTypeEnterprise drTypeEnterprise) {
+    public DrTypeEnterpriseEntity updateDrTypeEnterprise(Long id, DrTypeEnterpriseEntity drTypeEnterprise) {
         return drTypeEnterpriseRepository.findById(id)
                 .map(existing -> {
                     existing.setCodeTypeEnterprise(drTypeEnterprise.getCodeTypeEnterprise());
                     existing.setNameTypeEnterprise(drTypeEnterprise.getNameTypeEnterprise());
                     return drTypeEnterpriseRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("DrTypeEnterprise not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("DrTypeEnterpriseEntity not found with id " + id));
     }
 
     @Override
     public void deleteDrTypeEnterprise(Long id) {
         if (!drTypeEnterpriseRepository.existsById(id)) {
-            throw new RuntimeException("DrTypeEnterprise not found with id " + id);
+            throw new RuntimeException("DrTypeEnterpriseEntity not found with id " + id);
         }
         drTypeEnterpriseRepository.deleteById(id);
     }

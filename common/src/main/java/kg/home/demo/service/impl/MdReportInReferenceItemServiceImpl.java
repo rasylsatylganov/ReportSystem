@@ -1,6 +1,6 @@
 package kg.home.demo.service.impl;
 
-import kg.home.demo.entity.MdReportInReferenceItem;
+import kg.home.demo.entity.MdReportInReferenceItemEntity;
 import kg.home.demo.repository.MdReportInReferenceItemRepository;
 import kg.home.demo.service.MdReportInReferenceItemService;
 import org.springframework.stereotype.Service;
@@ -18,22 +18,22 @@ public class MdReportInReferenceItemServiceImpl implements MdReportInReferenceIt
     }
 
     @Override
-    public List<MdReportInReferenceItem> getAllMdReportInReferenceItems() {
+    public List<MdReportInReferenceItemEntity> getAllMdReportInReferenceItems() {
         return mdReportInReferenceItemRepository.findAll();
     }
 
     @Override
-    public Optional<MdReportInReferenceItem> getMdReportInReferenceItemById(Long id) {
+    public Optional<MdReportInReferenceItemEntity> getMdReportInReferenceItemById(Long id) {
         return mdReportInReferenceItemRepository.findById(id);
     }
 
     @Override
-    public MdReportInReferenceItem createMdReportInReferenceItem(MdReportInReferenceItem mdReportInReferenceItem) {
+    public MdReportInReferenceItemEntity createMdReportInReferenceItem(MdReportInReferenceItemEntity mdReportInReferenceItem) {
         return mdReportInReferenceItemRepository.save(mdReportInReferenceItem);
     }
 
     @Override
-    public MdReportInReferenceItem updateMdReportInReferenceItem(Long id, MdReportInReferenceItem mdReportInReferenceItem) {
+    public MdReportInReferenceItemEntity updateMdReportInReferenceItem(Long id, MdReportInReferenceItemEntity mdReportInReferenceItem) {
         return mdReportInReferenceItemRepository.findById(id)
                 .map(existing -> {
                     existing.setReportIn(mdReportInReferenceItem.getReportIn());
@@ -44,13 +44,13 @@ public class MdReportInReferenceItemServiceImpl implements MdReportInReferenceIt
                     existing.setIsRequired(mdReportInReferenceItem.getIsRequired());
                     return mdReportInReferenceItemRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("MdReportInReferenceItem not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("MdReportInReferenceItemEntity not found with id " + id));
     }
 
     @Override
     public void deleteMdReportInReferenceItem(Long id) {
         if (!mdReportInReferenceItemRepository.existsById(id)) {
-            throw new RuntimeException("MdReportInReferenceItem not found with id " + id);
+            throw new RuntimeException("MdReportInReferenceItemEntity not found with id " + id);
         }
         mdReportInReferenceItemRepository.deleteById(id);
     }

@@ -1,6 +1,6 @@
 package kg.home.demo.service.impl;
 
-import kg.home.demo.entity.DrReferenceItem;
+import kg.home.demo.entity.DrReferenceItemEntity;
 import kg.home.demo.repository.DrReferenceItemRepository;
 import kg.home.demo.service.DrReferenceItemService;
 import org.springframework.stereotype.Service;
@@ -18,22 +18,22 @@ public class DrReferenceItemServiceImpl implements DrReferenceItemService {
     }
 
     @Override
-    public List<DrReferenceItem> getAllDrReferenceItems() {
+    public List<DrReferenceItemEntity> getAllDrReferenceItems() {
         return drReferenceItemRepository.findAll();
     }
 
     @Override
-    public Optional<DrReferenceItem> getDrReferenceItemById(Long id) {
+    public Optional<DrReferenceItemEntity> getDrReferenceItemById(Long id) {
         return drReferenceItemRepository.findById(id);
     }
 
     @Override
-    public DrReferenceItem createDrReferenceItem(DrReferenceItem drReferenceItem) {
+    public DrReferenceItemEntity createDrReferenceItem(DrReferenceItemEntity drReferenceItem) {
         return drReferenceItemRepository.save(drReferenceItem);
     }
 
     @Override
-    public DrReferenceItem updateDrReferenceItem(Long id, DrReferenceItem drReferenceItem) {
+    public DrReferenceItemEntity updateDrReferenceItem(Long id, DrReferenceItemEntity drReferenceItem) {
         return drReferenceItemRepository.findById(id)
                 .map(existing -> {
                     existing.setReference(drReferenceItem.getReference());
@@ -42,13 +42,13 @@ public class DrReferenceItemServiceImpl implements DrReferenceItemService {
                     existing.setOrderSort(drReferenceItem.getOrderSort());
                     return drReferenceItemRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("DrReferenceItem not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("DrReferenceItemEntity not found with id " + id));
     }
 
     @Override
     public void deleteDrReferenceItem(Long id) {
         if (!drReferenceItemRepository.existsById(id)) {
-            throw new RuntimeException("DrReferenceItem not found with id " + id);
+            throw new RuntimeException("DrReferenceItemEntity not found with id " + id);
         }
         drReferenceItemRepository.deleteById(id);
     }
