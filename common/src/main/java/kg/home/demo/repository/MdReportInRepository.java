@@ -7,9 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MdReportInRepository extends JpaRepository<MdReportInEntity, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select r from MdReportInEntity r where r.id = :id")
     Optional<MdReportInEntity> findForUpdate(@Param("id") Long id);
+
+    @Query("select r from MdReportInEntity r " +
+            "where (:typePeriodId is null or r.typePeriod.id = :typePeriodId) " +
+            "and (:typeEnterpriseId is null or r.typeEnterprise.id = :typeEnterpriseId)")
+    Page<MdReportInEntity> findByTypes(@Param("typePeriodId") Long typePeriodId,
+            @Param("typeEnterpriseId") Long typeEnterpriseId, Pageable pageable);
 }

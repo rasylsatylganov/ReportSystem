@@ -23,10 +23,14 @@ import org.springframework.web.bind.annotation.*;
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 })
 public interface ReportTemplateControllerApi {
-    @Operation(summary = "Получить страницу входящих отчётов", operationId = "ReportTemplate_list")
+    @Operation(summary = "Получить страницу входящих отчётов", operationId = "ReportTemplate_list",
+            description = "Необязательные typePeriodId и typeEnterpriseId фильтруют по одному типу. " +
+                    "При передаче обоих условий они применяются совместно до пагинации.")
     @GetMapping
     ResponseEntity<PageResult<MdReportIn>> list(@RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size);
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
+            @RequestParam(required = false) @Positive Long typePeriodId,
+            @RequestParam(required = false) @Positive Long typeEnterpriseId);
 
     @Operation(summary = "Получить всю структуру отчёта", operationId = "ReportTemplate_get")
     @GetMapping("/{id}")

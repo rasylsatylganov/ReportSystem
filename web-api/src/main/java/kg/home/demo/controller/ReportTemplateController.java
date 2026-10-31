@@ -16,8 +16,10 @@ public class ReportTemplateController implements ReportTemplateControllerApi {
     private final ReportTemplateService service;
 
     @Override
-    public ResponseEntity<PageResult<MdReportIn>> list(int page, int size) {
-        return ResponseEntity.ok(service.findPage(PageRequest.of(page, size, Sort.by("id"))));
+    public ResponseEntity<PageResult<MdReportIn>> list(int page, int size, Long typePeriodId, Long typeEnterpriseId) {
+        var pageable = PageRequest.of(page, size, Sort.by("id"));
+        return ResponseEntity.ok(typePeriodId == null && typeEnterpriseId == null
+                ? service.findPage(pageable) : service.findPageByTypes(typePeriodId, typeEnterpriseId, pageable));
     }
 
     @Override

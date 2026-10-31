@@ -48,6 +48,11 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     }
 
     @Override
+    public PageResult<MdReportIn> findPageByTypes(Long typePeriodId, Long typeEnterpriseId, Pageable pageable) {
+        return PageResult.from(reports.findByTypes(typePeriodId, typeEnterpriseId, pageable).map(reportMapper::toModel));
+    }
+
+    @Override
     public ReportTemplate get(Long id) {
         return snapshot(required(reports.findById(id), "Входящий отчёт", id));
     }

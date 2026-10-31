@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface ReportTemplateService {
     PageResult<MdReportIn> findPage(Pageable pageable);
+    PageResult<MdReportIn> findPageByTypes(Long typePeriodId, Long typeEnterpriseId, Pageable pageable);
     ReportTemplate get(Long id);
     ReportDesignerLookups lookups();
     void validate(ReportTemplateRequest request);

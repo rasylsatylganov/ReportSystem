@@ -19,6 +19,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ReportTemplateControllerTest {
     @Test
+    void validatesAndForwardsSingleTypeFiltersTogetherWithPagination() throws Exception {
+        var service = mock(ReportTemplateService.class);
+        try (var validator = new LocalValidatorFactoryBean()) {
+            validator.afterPropertiesSet();
+            var mvc = MockMvcBuilders.standaloneSetup(new ReportTemplateController(service))
+                    .setValidator(validator).setControllerAdvice(new GlobalExceptionHandler()).build();
+            for (String parameter : List.of("typePeriodId", "typeEnterpriseId")) {
+                for (String invalid : List.of("0", "-1", "abc")) {
+                    mvc.perform(get("/api/incoming-report-templates").param(parameter, invalid))
+                            .andExpect(status().isBadRequest());
+                }
+            }
+            verifyNoInteractions(service);
+            var pageable = PageRequest.of(2, 5, Sort.by("id"));
+            when(service.findPageByTypes(1L, 2L, pageable))
+                    .thenReturn(new PageResult<>(List.of(), 2, 5, 11, 3));
+            mvc.perform(get("/api/incoming-report-templates").param("typePeriodId", "1")
+                            .param("typeEnterpriseId", "2").param("page", "2").param("size", "5"))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(11))
+                    .andExpect(jsonPath("$.page").value(2));
+            verify(service).findPageByTypes(1L, 2L, pageable);
+            var firstPage = PageRequest.of(0, 20, Sort.by("id"));
+            when(service.findPageByTypes(1L, null, firstPage)).thenReturn(new PageResult<>(List.of(), 0, 20, 0, 0));
+            mvc.perform(get("/api/incoming-report-templates").param("typePeriodId", "1"))
+                    .andExpect(status().isOk());
+            verify(service).findPageByTypes(1L, null, firstPage);
+            when(service.findPageByTypes(null, 2L, firstPage)).thenReturn(new PageResult<>(List.of(), 0, 20, 0, 0));
+            mvc.perform(get("/api/incoming-report-templates").param("typeEnterpriseId", "2"))
+                    .andExpect(status().isOk());
+            verify(service).findPageByTypes(null, 2L, firstPage);
+        }
+    }
+
+    @Test
     void validatesPaginationNestedStructureCheckboxAndReturnsConflict() throws Exception {
         var service = mock(ReportTemplateService.class);
         try (var validator = new LocalValidatorFactoryBean()) {

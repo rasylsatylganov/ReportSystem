@@ -5,6 +5,8 @@ import kg.home.demo.exception.TemplateValidationException;
 import kg.home.demo.model.*;
 import kg.home.demo.repository.TbReferenceItemRepository;
 import kg.home.demo.repository.TbReferenceItemValueRepository;
+import kg.home.demo.repository.DrTypePeriodRepository;
+import kg.home.demo.repository.DrTypeEnterpriseRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +24,41 @@ class ReportTemplateIntegrationTest {
     @Autowired private ReportTemplateService service;
     @Autowired private TbReferenceItemRepository dataReferences;
     @Autowired private TbReferenceItemValueRepository dataValues;
+    @Autowired private DrTypePeriodRepository periodTypes;
+    @Autowired private DrTypeEnterpriseRepository enterpriseTypes;
+
+    @Test
+    @Transactional
+    void filtersByBothTypesBeforePaginationOnOracle() {
+        var periods = periodTypes.findAll(Sort.by("id"));
+        var enterprises = enterpriseTypes.findAll(Sort.by("id"));
+        assertTrue(periods.size() >= 2 && enterprises.size() >= 2);
+        Long period = periods.get(0).getId();
+        Long otherPeriod = periods.get(1).getId();
+        Long enterprise = enterprises.get(0).getId();
+        Long otherEnterprise = enterprises.get(1).getId();
+        var page = PageRequest.of(0, 1, Sort.by("id"));
+        long before = service.findPageByTypes(period, otherEnterprise, page).totalElements();
+        var source = service.get(1L);
+        for (var combination : List.of(List.of(period, enterprise), List.of(period, otherEnterprise),
+                List.of(otherPeriod, enterprise))) {
+            var copy = request(source, true, "TEST_" + UUID.randomUUID().toString().replace("-", ""));
+            var report = copy.report();
+            service.create(new ReportTemplateRequest(new MdReportInRequest(report.codeReportIn(), report.nameReportIn(),
+                    new IdReference(combination.get(0)), new IdReference(combination.get(1)),
+                    report.indexRowScanBegin(), report.indexRowScanEnd()), copy.references(), copy.fields(), null));
+        }
+        var result = service.findPageByTypes(period, otherEnterprise, page);
+        assertEquals(before + 1, result.totalElements());
+        assertEquals(1, result.content().size());
+        assertEquals(period, result.content().getFirst().typePeriod().id());
+        assertEquals(otherEnterprise, result.content().getFirst().typeEnterprise().id());
+        var allOfPeriod = service.findPageByTypes(period, null, PageRequest.of(0, 100, Sort.by("id")));
+        assertTrue(allOfPeriod.content().stream().allMatch(report -> report.typePeriod().id().equals(period)));
+        var allOfEnterprise = service.findPageByTypes(null, enterprise, PageRequest.of(0, 100, Sort.by("id")));
+        assertTrue(allOfEnterprise.content().stream().allMatch(report -> report.typeEnterprise().id().equals(enterprise)));
+        assertEquals(0, service.findPageByTypes(Long.MAX_VALUE, otherEnterprise, page).totalElements());
+    }
 
     static ReportTemplateRequest request(ReportTemplate template, boolean create, String code) {
         var report = template.report();
