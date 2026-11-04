@@ -9,7 +9,10 @@ import lombok.Setter;
 @Table(
         name = "MD_REPORT_IN",
         uniqueConstraints = {
-                @UniqueConstraint(name = "UQ_MD_REPORT_IN_CODE", columnNames = "CODE_REPORT_IN")
+                @UniqueConstraint(
+                        name = "UQ_MD_REPORT_IN_SCOPE_CODE",
+                        columnNames = {"TYPE_ENTERPRISE_ID", "TYPE_PERIOD_ID", "CODE_REPORT_IN"}
+                )
         }
 )
 @Getter

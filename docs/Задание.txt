@@ -311,3 +311,10 @@ id	reference_item_id	report_in_reference_item_id	value_number	value_string	value
 18	8			5								03.10.2026	5
 19	9			4				342000000					6
 20	8			5								04.10.2026	6
+
+
+
+Последние данные по расположению проекта:
+1. бек: C:\Project JAVA My\48. ReportSystem\Source-backend\reporting-system
+2. фронт: C:\Project JAVA My\48. ReportSystem\Source-frontend\reporting-system-frontend
+3. документация: C:\Project JAVA My\48. ReportSystem\Source-backend\reporting-system\docs
