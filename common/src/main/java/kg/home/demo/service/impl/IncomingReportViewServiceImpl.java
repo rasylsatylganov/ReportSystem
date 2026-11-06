@@ -36,6 +36,21 @@ public class IncomingReportViewServiceImpl implements IncomingReportViewService 
     private final TbReferenceItemValueRepository dataValues;
 
     @Override
+    public PageResult<IncomingReportSubmission> submissions(List<Long> typePeriodIds, List<Long> typeEnterpriseIds,
+                                                           String search, Pageable pageable) {
+        String query = search == null || search.isBlank() ? null : search.strip().toLowerCase(Locale.ROOT);
+        var page = dataValues.findSubmissions(typePeriodIds, typeEnterpriseIds, query, pageable)
+                .map(row -> new IncomingReportSubmission(row.getPeriodId(), row.getPeriodName(),
+                        row.getEnterpriseId(), row.getEnterpriseName(), row.getEnterpriseCode()));
+        return PageResult.from(page);
+    }
+
+    @Override
+    public PageResult<SubmittedIncomingReport> submittedReports(Long periodId, Long enterpriseId, Pageable pageable) {
+        return PageResult.from(dataValues.findSubmittedReports(periodId, enterpriseId, pageable));
+    }
+
+    @Override
     public IncomingReportView get(Long reportId, Long periodId, Long enterpriseId, Pageable pageable) {
         var template = templates.get(reportId);
         var period = periods.findById(periodId)
