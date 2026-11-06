@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface DrPeriodRepository extends JpaRepository<DrPeriodEntity, Long> {
+    java.util.Optional<DrPeriodEntity> findByTypePeriod_IdAndCodePeriodIgnoreCase(Long typePeriodId, String code);
     // Oracle 12.1 rejects duplicate column names in joined paginated queries.
     // Keep the page query on one table; types are loaded in a separate batch.
     Page<DrPeriodEntity> findByTypePeriod_Id(Long typePeriodId, Pageable pageable);

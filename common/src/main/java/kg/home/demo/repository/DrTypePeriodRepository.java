@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface DrTypePeriodRepository extends JpaRepository<DrTypePeriodEntity, Long> {
+    java.util.Optional<DrTypePeriodEntity> findByCodeTypePeriodIgnoreCase(String code);
 
     @Query(value = "SELECT DR_TYPE_PERIOD_SORT_SEQ.NEXTVAL FROM dual", nativeQuery = true)
     Long nextSortIndex();

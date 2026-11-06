@@ -139,6 +139,7 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     @Override
     @Transactional
     public ReportTemplate create(ReportTemplateRequest request) {
+        metadataGuard.lockMetadata();
         validate(request);
         metadataGuard.requireEditable(request.report().typePeriod().id(), request.report().typeEnterprise().id());
         if (request.references().stream().anyMatch(ref -> ref.id() != null) ||
@@ -155,6 +156,7 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     @Override
     @Transactional
     public ReportTemplate update(Long id, ReportTemplateRequest request) {
+        metadataGuard.lockMetadata();
         var report = required(reports.findForUpdate(id), "Входящий отчёт", id);
         metadataGuard.requireEditable(report);
         if (!Objects.equals(snapshot(report).revision(), request.revision())) {
@@ -234,6 +236,7 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     @Override
     @Transactional
     public void delete(Long id) {
+        metadataGuard.lockMetadata();
         var report = required(reports.findForUpdate(id), "Входящий отчёт", id);
         metadataGuard.requireEditable(report);
         var oldFields = fields.findByReportIn_IdOrderById(id);

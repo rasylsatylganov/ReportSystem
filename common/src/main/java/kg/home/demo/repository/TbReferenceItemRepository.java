@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TbReferenceItemRepository extends JpaRepository<TbReferenceItemEntity, Long> {
+    boolean existsByPeriod_IdAndEnterprise_IdAndReportInReference_ReportIn_Id(
+            Long periodId, Long enterpriseId, Long reportId);
     boolean existsByReportInReference_Id(Long metadataId);
 
     // Include the last marker of each dimension before the page to continue groups across pages.

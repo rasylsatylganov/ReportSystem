@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface DrReferenceItemRepository extends JpaRepository<DrReferenceItemEntity, Long> {
+    List<DrReferenceItemEntity> findByReference_IdOrderById(Long referenceId);
     // Oracle 12.1 rejects duplicate column names in joined paginated queries.
     // Keep the page query on one table; types are loaded in a separate batch.
     Page<DrReferenceItemEntity> findByReference_Id(Long referenceId, Pageable pageable);

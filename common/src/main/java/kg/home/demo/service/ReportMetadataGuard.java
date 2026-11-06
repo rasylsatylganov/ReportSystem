@@ -5,6 +5,7 @@ import kg.home.demo.exception.ResourceNotFoundException;
 import kg.home.demo.exception.TemplateConflictException;
 import kg.home.demo.model.ReportMetadataAccess;
 import kg.home.demo.repository.MdReportInRepository;
+import kg.home.demo.repository.DrTypePeriodRepository;
 import kg.home.demo.repository.TbReferenceItemValueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,13 @@ public class ReportMetadataGuard {
 
     private final TbReferenceItemValueRepository values;
     private final MdReportInRepository reports;
+    private final DrTypePeriodRepository periodTypes;
+
+    // The same lock is acquired before import and metadata writes, including the first submission.
+    // Reuse the existing dictionary lock: no new table or migration is required.
+    public void lockMetadata() {
+        periodTypes.findAllForUpdate();
+    }
 
     public ReportMetadataAccess access(Long typePeriodId, Long typeEnterpriseId) {
         boolean readOnly = values.existsSubmittedDataByTypes(typePeriodId, typeEnterpriseId);
@@ -26,6 +34,7 @@ public class ReportMetadataGuard {
     }
 
     public void requireEditable(Long typePeriodId, Long typeEnterpriseId) {
+        lockMetadata();
         var access = access(typePeriodId, typeEnterpriseId);
         if (access.readOnly()) throw new TemplateConflictException(access.reason());
     }
