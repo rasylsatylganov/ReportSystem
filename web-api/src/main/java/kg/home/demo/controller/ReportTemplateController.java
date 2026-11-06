@@ -28,6 +28,11 @@ public class ReportTemplateController implements ReportTemplateControllerApi {
     }
 
     @Override
+    public ResponseEntity<ReportMetadataAccess> metadataAccess(Long typePeriodId, Long typeEnterpriseId) {
+        return ResponseEntity.ok(service.metadataAccess(typePeriodId, typeEnterpriseId));
+    }
+
+    @Override
     public ResponseEntity<ReportDesignerLookups> lookups() {
         return ResponseEntity.ok(service.lookups());
     }

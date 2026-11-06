@@ -7,6 +7,7 @@ import kg.home.demo.model.MdReportIn;
 import kg.home.demo.model.MdReportInRequest;
 import kg.home.demo.repository.MdReportInRepository;
 import kg.home.demo.service.MdReportInService;
+import kg.home.demo.service.ReportMetadataGuard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class MdReportInServiceImpl implements MdReportInService {
 
     private final MdReportInRepository mdReportInRepository;
     private final MdReportInMapper mapper;
+    private final ReportMetadataGuard metadataGuard;
 
     @Override
     public List<MdReportIn> findAllMdReportIns() {
@@ -38,6 +40,7 @@ public class MdReportInServiceImpl implements MdReportInService {
     @Override
     @Transactional
     public MdReportIn createMdReportIn(MdReportInRequest request) {
+        metadataGuard.requireEditable(request.typePeriod().id(), request.typeEnterprise().id());
         MdReportInEntity entity = new MdReportInEntity();
         mapper.applyRequest(entity, request);
         return mapper.toModel(mdReportInRepository.save(entity));
@@ -48,6 +51,8 @@ public class MdReportInServiceImpl implements MdReportInService {
     public MdReportIn updateMdReportIn(Long id, MdReportInRequest request) {
         MdReportInEntity entity = mdReportInRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Входящий отчет", id));
+        metadataGuard.requireEditable(entity);
+        metadataGuard.requireEditable(request.typePeriod().id(), request.typeEnterprise().id());
         mapper.applyRequest(entity, request);
         return mapper.toModel(mdReportInRepository.save(entity));
     }
@@ -55,9 +60,7 @@ public class MdReportInServiceImpl implements MdReportInService {
     @Override
     @Transactional
     public void deleteMdReportIn(Long id) {
-        if (!mdReportInRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Входящий отчет", id);
-        }
+        metadataGuard.requireEditableReport(id);
         mdReportInRepository.deleteById(id);
     }
 

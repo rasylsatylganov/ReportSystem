@@ -11,6 +11,18 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TbReferenceItemValueRepository extends JpaRepository<TbReferenceItemValueEntity, Long> {
+    @Query("""
+            select case when count(v) > 0 then true else false end
+            from TbReferenceItemValueEntity v
+            join v.reportInReferenceItem.reportIn m
+            where m.typePeriod.id = :typePeriodId and m.typeEnterprise.id = :typeEnterpriseId
+              and v.referenceItem.reportInReference.reportIn.id = m.id
+              and v.referenceItem.period.typePeriod.id = m.typePeriod.id
+              and v.referenceItem.enterprise.typeEnterprise.id = m.typeEnterprise.id
+            """)
+    boolean existsSubmittedDataByTypes(@Param("typePeriodId") Long typePeriodId,
+            @Param("typeEnterpriseId") Long typeEnterpriseId);
+
     // Header markers alone do not constitute a submitted report: at least one cell must exist.
     String SUBMISSIONS_FROM = """
             from TB_REFERENCE_ITEM_VALUE v

@@ -7,6 +7,7 @@ public interface ReportTemplateService {
     PageResult<MdReportIn> findPage(Pageable pageable);
     PageResult<MdReportIn> findPageByTypes(Long typePeriodId, Long typeEnterpriseId, Pageable pageable);
     ReportTemplate get(Long id);
+    ReportMetadataAccess metadataAccess(Long typePeriodId, Long typeEnterpriseId);
     ReportDesignerLookups lookups();
     void validate(ReportTemplateRequest request);
     ReportTemplate create(ReportTemplateRequest request);

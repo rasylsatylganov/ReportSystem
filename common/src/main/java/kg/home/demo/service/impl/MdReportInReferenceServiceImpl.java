@@ -7,6 +7,7 @@ import kg.home.demo.model.MdReportInReference;
 import kg.home.demo.model.MdReportInReferenceRequest;
 import kg.home.demo.repository.MdReportInReferenceRepository;
 import kg.home.demo.service.MdReportInReferenceService;
+import kg.home.demo.service.ReportMetadataGuard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class MdReportInReferenceServiceImpl implements MdReportInReferenceServic
 
     private final MdReportInReferenceRepository mdReportInReferenceRepository;
     private final MdReportInReferenceMapper mapper;
+    private final ReportMetadataGuard metadataGuard;
 
     @Override
     public List<MdReportInReference> findAllMdReportInReferences() {
@@ -38,6 +40,7 @@ public class MdReportInReferenceServiceImpl implements MdReportInReferenceServic
     @Override
     @Transactional
     public MdReportInReference createMdReportInReference(MdReportInReferenceRequest request) {
+        metadataGuard.requireEditableReport(request.reportIn().id());
         MdReportInReferenceEntity entity = new MdReportInReferenceEntity();
         mapper.applyRequest(entity, request);
         return mapper.toModel(mdReportInReferenceRepository.save(entity));
@@ -48,6 +51,8 @@ public class MdReportInReferenceServiceImpl implements MdReportInReferenceServic
     public MdReportInReference updateMdReportInReference(Long id, MdReportInReferenceRequest request) {
         MdReportInReferenceEntity entity = mdReportInReferenceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Справочник входящего отчета", id));
+        metadataGuard.requireEditable(entity.getReportIn());
+        metadataGuard.requireEditableReport(request.reportIn().id());
         mapper.applyRequest(entity, request);
         return mapper.toModel(mdReportInReferenceRepository.save(entity));
     }
@@ -55,9 +60,9 @@ public class MdReportInReferenceServiceImpl implements MdReportInReferenceServic
     @Override
     @Transactional
     public void deleteMdReportInReference(Long id) {
-        if (!mdReportInReferenceRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Справочник входящего отчета", id);
-        }
+        var entity = mdReportInReferenceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Справочник входящего отчета", id));
+        metadataGuard.requireEditable(entity.getReportIn());
         mdReportInReferenceRepository.deleteById(id);
     }
 

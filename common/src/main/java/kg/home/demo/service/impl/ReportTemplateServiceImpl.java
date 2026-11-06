@@ -8,6 +8,7 @@ import kg.home.demo.mapper.*;
 import kg.home.demo.model.*;
 import kg.home.demo.repository.*;
 import kg.home.demo.service.ReportTemplateService;
+import kg.home.demo.service.ReportMetadataGuard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,14 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     private final DrTypePositionMapper positionMapper;
     private final DrTypeFieldMapper fieldTypeMapper;
     private final Validator validator;
+    private final ReportMetadataGuard metadataGuard;
+
+    @Override
+    public ReportMetadataAccess metadataAccess(Long typePeriodId, Long typeEnterpriseId) {
+        required(periodTypes.findById(typePeriodId), "Тип периода", typePeriodId);
+        required(enterpriseTypes.findById(typeEnterpriseId), "Тип предприятия", typeEnterpriseId);
+        return metadataGuard.access(typePeriodId, typeEnterpriseId);
+    }
 
     @Override
     public PageResult<MdReportIn> findPage(Pageable pageable) {
@@ -131,6 +140,7 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     @Transactional
     public ReportTemplate create(ReportTemplateRequest request) {
         validate(request);
+        metadataGuard.requireEditable(request.report().typePeriod().id(), request.report().typeEnterprise().id());
         if (request.references().stream().anyMatch(ref -> ref.id() != null) ||
                 request.fields().stream().anyMatch(field -> field.id() != null)) {
             throw invalid("Новый отчёт не может содержать ID элементов другого отчёта.");
@@ -146,10 +156,12 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     @Transactional
     public ReportTemplate update(Long id, ReportTemplateRequest request) {
         var report = required(reports.findForUpdate(id), "Входящий отчёт", id);
+        metadataGuard.requireEditable(report);
         if (!Objects.equals(snapshot(report).revision(), request.revision())) {
             throw new TemplateConflictException("Отчёт изменён после открытия. Обновите его перед сохранением.");
         }
         validate(request);
+        metadataGuard.requireEditable(request.report().typePeriod().id(), request.report().typeEnterprise().id());
         var oldReferences = references.findByReportIn_IdOrderById(id);
         var oldFields = fields.findByReportIn_IdOrderById(id);
         writeChildren(report, request, oldReferences, oldFields);
@@ -223,6 +235,7 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     @Transactional
     public void delete(Long id) {
         var report = required(reports.findForUpdate(id), "Входящий отчёт", id);
+        metadataGuard.requireEditable(report);
         var oldFields = fields.findByReportIn_IdOrderById(id);
         var oldRefs = references.findByReportIn_IdOrderById(id);
         if (oldFields.stream().anyMatch(field -> dataValues.existsByReportInReferenceItem_Id(field.getId())) ||
@@ -240,11 +253,12 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     private ReportTemplate snapshot(MdReportInEntity report) {
         var refs = references.findByReportIn_IdOrderById(report.getId()).stream().map(referenceMapper::toModel).toList();
         var items = fields.findByReportIn_IdOrderById(report.getId()).stream().map(fieldMapper::toModel).toList();
-        var data = new ReportTemplate(reportMapper.toModel(report), refs, items, null);
+        var data = new ReportTemplate(reportMapper.toModel(report), refs, items, null, false, null);
         try {
             String revision = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
                     .digest(data.toString().getBytes(StandardCharsets.UTF_8)));
-            return new ReportTemplate(data.report(), refs, items, revision);
+            var access = metadataGuard.access(report.getTypePeriod().getId(), report.getTypeEnterprise().getId());
+            return new ReportTemplate(data.report(), refs, items, revision, access.readOnly(), access.reason());
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("SHA-256 is unavailable", exception);
         }

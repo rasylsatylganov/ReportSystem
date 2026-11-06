@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
         @ApiResponse(responseCode = "404", description = "Отчёт или связанный объект не найден",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-        @ApiResponse(responseCode = "409", description = "Конфликт данных или устаревшая редакция",
+        @ApiResponse(responseCode = "409", description = "Пара типов доступна только для просмотра, конфликт данных или устаревшая редакция",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 })
 public interface ReportTemplateControllerApi {
@@ -32,9 +32,16 @@ public interface ReportTemplateControllerApi {
             @RequestParam(required = false) @Positive Long typePeriodId,
             @RequestParam(required = false) @Positive Long typeEnterpriseId);
 
-    @Operation(summary = "Получить всю структуру отчёта", operationId = "ReportTemplate_get")
+    @Operation(summary = "Получить всю структуру отчёта", operationId = "ReportTemplate_get",
+            description = "Возвращает readOnly и readOnlyReason. Просмотр доступен и для защищённой пары типов.")
     @GetMapping("/{id}")
     ResponseEntity<ReportTemplate> get(@PathVariable("id") @Positive Long id);
+
+    @Operation(summary = "Проверить доступ к метаданным пары типов", operationId = "ReportTemplate_metadataAccess",
+            description = "Если в паре есть сданные данные за любой период, все её формы доступны только для просмотра.")
+    @GetMapping("/metadata-access")
+    ResponseEntity<ReportMetadataAccess> metadataAccess(@RequestParam @Positive Long typePeriodId,
+            @RequestParam @Positive Long typeEnterpriseId);
 
     @Operation(summary = "Получить расположения и типы полей", operationId = "ReportTemplate_lookups")
     @GetMapping("/lookups")
@@ -44,18 +51,20 @@ public interface ReportTemplateControllerApi {
     @PostMapping("/validate")
     ResponseEntity<Void> validate(@RequestBody @Valid ReportTemplateRequest request);
 
-    @Operation(summary = "Создать отчёт и его структуру одной транзакцией", operationId = "ReportTemplate_create")
+    @Operation(summary = "Создать отчёт и его структуру одной транзакцией", operationId = "ReportTemplate_create",
+            description = "Создание запрещено, если в целевой паре типов уже есть сданные отчёты (409).")
     @PostMapping
     ResponseEntity<ReportTemplate> create(@RequestBody @Valid ReportTemplateRequest request);
 
     @Operation(summary = "Сохранить структуру с проверкой редакции", operationId = "ReportTemplate_update",
             description = "Существующие ID сохраняются. revision из GET обязателен. " +
-                    "Удаление используемых метаданных и смена типа поля с данными запрещены.")
+                    "Если в исходной или целевой паре типов есть сданные данные за любой период, изменение запрещено (409).")
     @PutMapping("/{id}")
     ResponseEntity<ReportTemplate> update(@PathVariable("id") @Positive Long id,
             @RequestBody @Valid ReportTemplateRequest request);
 
-    @Operation(summary = "Удалить отчёт без загруженных данных", operationId = "ReportTemplate_delete")
+    @Operation(summary = "Удалить отчёт без загруженных данных", operationId = "ReportTemplate_delete",
+            description = "Удаление запрещено для всех форм пары типов, в которой есть сданные данные (409).")
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(@PathVariable("id") @Positive Long id);
 }
